@@ -1,0 +1,65 @@
+#! /bin/sh
+
+# Script for adjusting volume and showing notifiction
+# called by media keys set up in sxhkd
+
+MAXVOL=99
+MINVOL=0
+VOLSTEP=1
+
+get_vol(){
+    def=$(pactl get-default-sink)
+    vol=$(pactl get-sink-volume "$def" | sed -n 's/.* \([0-9]\+\)% .*/\1/p; s/.* \([0-9]\+\)%$/\1/p')
+    echo $vol
+}
+
+get_mute() {
+    mute=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{ print $2 }')
+    echo $mute
+}
+
+notify() {
+    if [ "$1" = "mute" ]; then
+	if [ $(get_mute) = "yes" ];then
+            notify-send --icon=audio-volume-muted -h int:value:"$(get_vol)%" "Volume" "Muted"
+	else
+            notify-send --icon=audio-volume-medium -h int:value:"$(get_vol)%" "Volume" "$(get_vol)%"
+	fi
+    else
+        notify-send --icon=audio-volume-medium -h int:value:"$(get_vol)%" "Volume" "$(get_vol)%"
+    fi
+}
+
+toggle_mute() {
+    pactl set-sink-mute @DEFAULT_SINK@ toggle
+}
+
+set_vol() {
+    if [ $(get_mute) = "yes" ]; then
+        toggle_mute
+    fi
+    pactl set-sink-volume @DEFAULT_SINK@ "$1"%
+}
+
+update_status() {
+    pkill -RTMIN+5 slstatus
+}
+
+if [ $1 = "up" ] && [ $(get_vol) -le $MAXVOL ]; then
+    set_vol "+$VOLSTEP"
+    update_status
+    notify
+elif [ $1 = "down" ] && [ $(get_vol) -ge $MINVOL ]; then
+    set_vol "-$VOLSTEP"
+    update_status
+    notify
+elif [ $1 = "mute" ]; then
+    toggle_mute
+    update_status
+    notify "mute"
+elif [ $1 = "setvolume" ]; then
+    v=$(dmenu -p "Set Volume:")
+    set_vol "$v"
+    update_status
+    notify
+fi

@@ -1,0 +1,21 @@
+#! /bin/sh
+
+# Websearch with dmenu
+
+search_engine=$(printf "Google\nDuckDuckGo\nYouTube\nBing" | sort | dmenu -i -l 20 -p "Choose Search:")
+
+case "$search_engine" in 
+    "Google")
+        echo $(echo "" | dmenu -p "Google Search:" | xargs -I{} xdg-open https://www.google.com/search?q={})
+	;;
+    "DuckDuckGo")
+        echo $(echo "" | dmenu -p "DuckDuckGo Search:" | xargs -I{} xdg-open https://www.duckduckgo.com/?q={})
+	;;
+    "YouTube")
+        echo $(echo "" | dmenu -p "YouTube Search:" | xargs -I{} xdg-open https://www.youtube.com/results?search_query={})
+	;;
+    "Bing")
+        echo $(echo "" | dmenu -p "Bing Search:" | xargs -I{} xdg-open https://www.bing.com/search?q={})
+	;;
+esac
+

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Script for launching or creating VMs with qemu/kvm
+
+
+# Start default network if not active
+start_network() {
+    net=$(virsh net-list --all | awk 'NR > 2 {print $2}')
+    if [[ "$net" == "inactive" ]]; then virsh net-start default; fi
+}
+
+# Find available VMs
+find_wm() {
+    vm_names=$(virsh list --all | awk 'NR > 2 {print $2}')
+    dmenu_options=$(echo -e "$vm_names\nCreate New")
+    if [[ "$vm_names" == "" ]]
+    then
+        dmenu_options=$(echo -e "Create New")
+    fi
+    echo "$dmenu_options"
+}
+
+# Start selected vm
+start_vm() {
+    start_network
+    virsh start $1 && virt-viewer $1
+}
+
+# Select a VM from dmenu
+vm=$(find_wm)
+selected_vm=$(echo "$vm" | dmenu -i -l 5 -p "Start/create VM:")
+
+# Start the selected VM or open virt-manager if create new is selected
+if [ "$selected_vm" = "Create New" ]; then
+    virt-manager
+elif [ -n "$selected_vm" ]; then
+    start_vm $selected_vm
+else
+    echo "No VM selected."
+fi
+

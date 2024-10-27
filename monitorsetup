@@ -1,0 +1,22 @@
+#!/bin/sh
+
+layoutsdir="$HOME/.screenlayout"
+set_with_arandr="New layout (arandr)"
+
+run_dmenu() {
+    { ls "$layoutsdir"; echo "$set_with_arandr"; } | sort | dmenu -i -l 20 -p "Choose monitor setup"
+}
+
+postrun() {
+  $HOME/./.fehbg
+}
+
+chosen="$(run_dmenu)"
+if [ "$chosen" == "$set_with_arandr" ]; then
+    arandr
+else
+    "$layoutsdir/$chosen"
+fi
+
+postrun
+

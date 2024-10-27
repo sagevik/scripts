@@ -1,0 +1,18 @@
+#! /bin/sh
+
+if [ "$(checkupdates | wc -l)" -eq 0 ]; then
+    echo "No updates to install"
+else
+    echo "Updating system"
+    # create backup
+    sudo timeshift --create
+    
+    # update packages
+    sudo pacman -Syu
+    
+    # reset file read by slstatus
+    echo "0" > /tmp/packageUpdates.tmp
+    
+    # notify
+    dunstify "Finished updating"
+fi

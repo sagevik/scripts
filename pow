@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# Pass variables to dmenu
+run_dmenu() {
+	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | dmenu -i -p "?"
+}
+
+chosen="$(run_dmenu)"
+case ${chosen} in
+    "Lock")
+        slock
+        ;;
+    "Suspend")
+        slock &
+        systemctl suspend
+        ;;
+    "Logout")
+        pkill -KILL -u $USER
+        ;;
+    "Reboot")
+        systemctl reboot
+        ;;
+    "Shutdown")
+        systemctl poweroff
+        ;;
+esac
+

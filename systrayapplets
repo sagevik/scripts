@@ -1,0 +1,8 @@
+
+# Wifi
+pkill -15 nm-applet
+nm-applet &
+
+# Bluetooth
+pkill -15 blueman-applet
+blueman-applet &
