@@ -10,15 +10,13 @@ notify() {
 case ${1} in
 	"selection")
 		maim -u -s "$OUTDIR/$OUTFILE"
-		notify "$1"
+		if [ $? -eq 0 ]; then notify "$1"; fi
 		;;
 	"fullscreen")
 		maim -q -d 0.5 "$OUTDIR/$OUTFILE"
-		notify "$1"
 		;;
         "window")
 		maim -q -d 0.5 -i "$(xdotool getactivewindow)" "$OUTDIR/$OUTFILE"
-		notify "$1"
 		;;
 
 esac
