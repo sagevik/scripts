@@ -2,7 +2,7 @@
 
 # Websearch with dmenu
 
-search_engine=$(printf "Google\nDuckDuckGo\nYouTube\nBing" | sort | dmenu -i -l 20 -p "Choose Search:")
+search_engine=$(printf "Google\nDuckDuckGo\nYouTube\nBing\nSearx" | sort | dmenu -i -l 20 -p "Choose Search:")
 
 case "$search_engine" in 
     "Google")
@@ -16,6 +16,9 @@ case "$search_engine" in
 	;;
     "Bing")
         echo $(echo "" | dmenu -p "Bing Search:" | xargs -I{} xdg-open https://www.bing.com/search?q={})
+	;;
+    "Searx")
+        echo $(echo "" | dmenu -p "Searx Search:" | xargs -I{} xdg-open https://searx.tiekoetter.com/search?q={})
 	;;
 esac
 
