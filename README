@@ -1,4 +1,20 @@
 Collection of scripts
 ======================
 A collection of scripts I currently use on my Linux installation. 
+Use at your own risk..
+
+- archupdate     : Update the system. Takes a snapshot with timeshift before updating. 
+- audioselect    : Choose audio card. 
+- brightness     : Setting screenbrightness via hotkeys in dwm. 
+- changewall     : Change wallpaper. 
+- displayselect  : Configure display setup. Copied from Luke Smith
+                   https://github.com/LukeSmithxyz/voidrice/blob/master/.local/bin/displayselect 
+- monitorsetup   : Select saved screenlayouts, or create a new with arandr. 
+- packageupdates : Running in the background checking for updates. 
+- pow            : Menu for dmenu to lock, suspen, logout, reboot or shutdown. 
+- scrshot        : Take screenshots via hotkeys in dwm. 
+- vmselector     : Start or create vm's in qemu/kvm. 
+- volume         : Setting audio volume with hotkeys in dwm. 
+- webcam         : Run webcam via ffplay. 
+- websearch      : Websearch from dmenu. 
 
