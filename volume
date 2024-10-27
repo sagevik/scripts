@@ -57,7 +57,7 @@ elif [ $1 = "mute" ]; then
     update_status
     notify "mute"
 elif [ $1 = "setvolume" ]; then
-    v=$(dmenu -p "Set Volume:")
+    v=$(echo "" | dmenu -p "Set Volume:")
     set_vol "$v"
     update_status
     notify
