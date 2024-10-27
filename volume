@@ -1,7 +1,6 @@
 #! /bin/sh
 
 # Script for adjusting volume and showing notifiction
-# called by media keys set up in sxhkd
 
 MAXVOL=99
 MINVOL=0
