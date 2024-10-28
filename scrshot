@@ -14,9 +14,11 @@ case ${1} in
 		;;
 	"fullscreen")
 		maim -q -d 0.5 "$OUTDIR/$OUTFILE"
+		notify "$1"
 		;;
         "window")
 		maim -q -d 0.5 -i "$(xdotool getactivewindow)" "$OUTDIR/$OUTFILE"
+		notify "$1"
 		;;
 
 esac
