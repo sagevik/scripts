@@ -1,0 +1,34 @@
+#! /bin/sh
+
+# Check battery capacity and charge status
+
+stats=$(cat /sys/class/power_supply/BAT0/uevent)
+battery_capacity=$(echo "$stats" | sed -n 's/^POWER_SUPPLY_CAPACITY=\(.*\)/\1/p')
+battery_charge_status=$(echo "$stats" | sed -n 's/^POWER_SUPPLY_STATUS=\(.*\)/\1/p')
+
+batstat=" "
+case $battery_charge_status in
+    "Charging")
+	batstat="  "
+        ;;
+    "Full")
+        notify-send " Battery fully charged" "You can disconnect the charger"
+	;;
+esac
+
+bat=""
+if [ "$battery_capacity" -ge 90 ]; then
+    bat=""
+elif [ "$battery_capacity" -ge 75 ]; then
+    bat=""
+elif [ "$battery_capacity" -ge 35 ]; then
+    bat=""
+elif [ "$battery_capacity" -ge 10 ]; then
+    bat=""
+else
+    notify-send --urgency=critical " Battery critical" "Charge your computer"
+    bat=" "
+fi
+
+printf "$bat$batstat$battery_capacity%%"
+
