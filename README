@@ -6,6 +6,7 @@ Use at your own risk..
 
 - archupdate     : Update the system. Takes a snapshot with timeshift before updating. 
 - audioselect    : Choose audio card. 
+- battery	 : Battery status for statusbar
 - brightness     : Setting screenbrightness via hotkeys in dwm. 
 - changewall     : Change wallpaper. 
 - displayselect  : Configure display setup. Copied from Luke Smith
