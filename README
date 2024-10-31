@@ -1,6 +1,7 @@
 Collection of scripts
 ======================
 A collection of scripts I currently use on my Linux installation. 
+Run ./install.sh to symlink all scripts to the /usr/local/bin folder
 Use at your own risk..
 
 - archupdate     : Update the system. Takes a snapshot with timeshift before updating. 
