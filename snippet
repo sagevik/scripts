@@ -1,0 +1,56 @@
+#! /bin/sh
+
+# Script for storing snippets in a file
+
+snippet_file="$HOME/dox/snippets"
+
+ensure_snippet_file() {
+    snippet_dir=$(dirname "$snippet_file")
+
+    if [ ! -d "$snippet_dir" ]; then
+        mkdir -p "$snippet_dir"
+	notify-send "Snippets" "Directory for snippets created"
+    fi
+
+    if [ ! -f "$snippet_file" ]; then
+        touch "$snippet_file"
+	notify-send "Snippets" "Snippet file created"
+    fi
+}
+
+get_snippet() {
+    # Type out snippet
+    #xdotool type $(grep -v '^#' $snippet_file | dmenu -i -l 50 | cut -d' ' -f1)
+    xdotool type $(grep -v '^#' $snippet_file | dmenu -i -l 50)
+
+    # Put snippet on clipboard
+    #grep -v '^#' "$snippet_file" | dmenu -i -l 50 | cut -d' ' -f1 | xclip -selection clipboard
+    #grep -v '^#' "$snippet_file" | dmenu -i -l 50 | xclip -selection clipboard
+}
+
+set_snippet() {
+    snippet="$(xclip -o)"
+    if [ -z "$snippet" ] || [ "$(echo "$snippet" | tr -d  '[:space:]')" = "" ]; then
+        notify-send "Error" "Cannot save empty snippet"
+	return
+    fi
+
+    ensure_snippet_file
+    if grep -q "^$snippet$" "$snippet_file"; then
+        notify-send "!!!" "Already snippeted"
+    else
+        echo "$snippet" >> "$snippet_file"
+        notify-send "Snippet added!" "$snippet is now saved to file"
+    fi
+}
+
+if [ "$1" == "set" ]
+then
+    set_snippet
+elif [ "$1" == "get" ]
+then
+    get_snippet
+else
+   st -e vim "$snippet_file"
+fi
+
