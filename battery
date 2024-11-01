@@ -1,7 +1,9 @@
 #! /bin/sh
 
-# Check battery capacity and charge status
+# File to track battery full status
+status_file="/tmp/battery_status"
 
+# Check battery capacity and charge status
 stats=$(cat /sys/class/power_supply/BAT0/uevent)
 battery_capacity=$(echo "$stats" | sed -n 's/^POWER_SUPPLY_CAPACITY=\(.*\)/\1/p')
 battery_charge_status=$(echo "$stats" | sed -n 's/^POWER_SUPPLY_STATUS=\(.*\)/\1/p')
@@ -12,9 +14,14 @@ case $battery_charge_status in
 	batstat="  "
         ;;
     "Full")
-        notify-send " Battery fully charged" "You can disconnect the charger"
+	if [ "$(cat $status_file 2>/dev/null)" != "Full" ]; then
+            notify-send " Battery fully charged" "You can disconnect the charger"
+	fi
 	;;
 esac
+
+# Update status file
+echo "$battery_charge_status" > "$status_file"
 
 bat=""
 if [ "$battery_capacity" -ge 90 ]; then
