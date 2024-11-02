@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# Script for adjusting volume and showing notifiction
+# Script for adjusting volume, setting statusbar and showing notifiction
 
 MAXVOL=99
 MINVOL=0
@@ -44,24 +44,48 @@ update_status() {
     pkill -RTMIN+5 slstatus
 }
 
-if [ $1 = "up" ] && [ $(get_vol) -le $MAXVOL ]; then
-    set_vol "+$VOLSTEP"
-    update_status
-    notify
-elif [ $1 = "down" ] && [ $(get_vol) -ge $MINVOL ]; then
-    set_vol "-$VOLSTEP"
-    update_status
-    notify
-elif [ $1 = "mute" ]; then
-    toggle_mute
-    update_status
-    notify "mute"
-elif [ $1 = "setvolume" ]; then
-    v=$(echo "" | dmenu -p "Set Volume:")
-    if [ $? -eq 0 ] && [ $v -gt -1 ] && [ $v -lt 101 ]
-    then
-        set_vol "$v"
+volume_pa() {
+	def=$(pactl get-default-sink)
+	muted=$(pactl get-sink-mute "$def" | awk '/Mute:/ { print $2 }')
+	vol=$(pactl get-sink-volume "$def" | sed -n 's/.* \([0-9]\+\)% .*/\1/p; s/.* \([0-9]\+\)%$/\1/p')
+
+	if [ "$muted" = "yes" ]; then
+		echo " mute"
+	else
+		if [ "$vol" -ge 65 ]; then
+			echo " $vol%"
+		elif [ "$vol" -ge 40 ]; then
+			echo " $vol%"
+		elif [ "$vol" -ge 0 ]; then
+			echo " $vol%"	
+		fi
+	fi
+
+}
+
+if [ -n "$1" ]; then
+    if [ "$1" = "up" ] && [ $(get_vol) -le $MAXVOL ]; then
+        set_vol "+$VOLSTEP"
         update_status
         notify
+    elif [ "$1" = "down" ] && [ $(get_vol) -ge $MINVOL ]; then
+        set_vol "-$VOLSTEP"
+        update_status
+        notify
+    elif [ "$1" = "mute" ]; then
+        toggle_mute
+        update_status
+        notify "mute"
+    elif [ "$1" = "setvolume" ]; then
+        v=$(echo "" | dmenu -p "Set Volume:")
+        if [ $? -eq 0 ] && [ $v -gt -1 ] && [ $v -lt 101 ]
+        then
+            set_vol "$v"
+            update_status
+            notify
+        fi
     fi
+else
+    volume_pa
 fi
+
