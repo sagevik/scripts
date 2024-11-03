@@ -8,10 +8,10 @@ stats=$(cat /sys/class/power_supply/BAT0/uevent)
 battery_capacity=$(echo "$stats" | sed -n 's/^POWER_SUPPLY_CAPACITY=\(.*\)/\1/p')
 battery_charge_status=$(echo "$stats" | sed -n 's/^POWER_SUPPLY_STATUS=\(.*\)/\1/p')
 
-batstat=" "
+batstat=""
 case $battery_charge_status in
     "Charging")
-	batstat="  "
+	batstat=" "
         ;;
     "Full")
 	if [ "$(cat $status_file 2>/dev/null)" != "Full" ]; then
@@ -33,9 +33,13 @@ elif [ "$battery_capacity" -ge 35 ]; then
 elif [ "$battery_capacity" -ge 10 ]; then
     bat=""
 else
-    notify-send --urgency=critical " Battery critical" "Charge your computer"
-    bat=" "
+    if [ "$battery_charge_status" = "Charging" ]; then
+	  bat=""
+    else
+        notify-send --urgency=critical " Battery critical" "Charge your computer"
+       	bat=" "
+    fi
 fi
 
-printf "$bat$batstat$battery_capacity%%"
+printf "$batstat$bat $battery_capacity%%"
 
