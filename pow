@@ -6,7 +6,7 @@ run_dmenu() {
 }
 
 chosen="$(run_dmenu)"
-case ${chosen} in
+case $chosen in
     "Lock")
         slock
         ;;
@@ -23,6 +23,9 @@ case ${chosen} in
         ;;
     "Shutdown")
         systemctl poweroff
+        ;;
+    *)
+        # 
         ;;
 esac
 
