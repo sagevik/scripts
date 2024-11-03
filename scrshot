@@ -7,18 +7,16 @@ notify() {
     notify-send --icon=camera-photo "Screenshot" "$1 screenshot saved to $OUTFILE"
 }
 
-case ${1} in
-	"selection")
-		maim -u -s "$OUTDIR/$OUTFILE"
-		if [ $? -eq 0 ]; then notify "$1"; fi
-		;;
-	"fullscreen")
-		maim -q -d 0.5 "$OUTDIR/$OUTFILE"
-		notify "$1"
-		;;
-        "window")
-		maim -q -d 0.5 -i "$(xdotool getactivewindow)" "$OUTDIR/$OUTFILE"
-		notify "$1"
-		;;
+# Create output dir if not exist
+[ -d "$OUTDIR" ] || mkdir -p "$OUTDIR"
 
+# Choose type of screenshot
+case $1 in
+case ${1} in
+    "selection")
+        maim -u -s "$OUTDIR/$OUTFILE" && notify "$1";;
+    "fullscreen")
+        maim -q -d 0.5 "$OUTDIR/$OUTFILE" && notify "$1";;
+    "window")
+        maim -q -d 0.5 -i "$(xdotool getactivewindow)" "$OUTDIR/$OUTFILE" && notify "$1";;
 esac
