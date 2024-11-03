@@ -12,7 +12,6 @@ notify() {
 
 # Choose type of screenshot
 case $1 in
-case ${1} in
     "selection")
         maim -u -s "$OUTDIR/$OUTFILE" && notify "$1";;
     "fullscreen")
