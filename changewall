@@ -1,4 +1,8 @@
 #! /bin/sh
-wallpaperDir="$HOME/pix/wallpapers"
 
-feh --bg-fill "$wallpaperDir/$(ls $wallpaperDir | shuf -n 1)" &
+wallpaperDir="$HOME/pix/wallpapers"
+wp="$HOME/.local/share/background/wp.jpg"
+
+cp "$wallpaperDir/$(ls $wallpaperDir | shuf -n 1)" "$wp"
+feh --bg-fill "$wp" &
+
