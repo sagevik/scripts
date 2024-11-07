@@ -2,6 +2,7 @@
 
 if [ "$(checkupdates | wc -l)" -eq 0 ]; then
     echo "No updates to install"
+    notify-send "archupdate" "No updates to install"
 else
     echo "Updating system"
     # create backup
@@ -14,5 +15,6 @@ else
     echo "0" > /tmp/packageUpdates.tmp
     
     # notify
-    dunstify "Finished updating"
+    notify-send "archupdate" "Finished updating"
 fi
+
