@@ -3,6 +3,20 @@
 wallpaperDir="$HOME/pix/wallpapers"
 wp="$HOME/.local/share/background/wp.jpg"
 
-cp "$wallpaperDir/$(ls $wallpaperDir | shuf -n 1)" "$wp"
-feh --bg-fill "$wp" &
+# check if wallpaper dir exists
+if [ ! -d $wallpaperDir ]; then
+    mkdir -p $wallpaperDir
+fi
 
+# check if background dir exists
+if [ ! -d $(dirname $wp) ]; then
+    mkdir -p $(dirname $wp)
+fi
+
+newWp=$(ls $wallpaperDir | shuf -n 1)
+if [ "$newWp" = "" ]; then
+    notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty"
+else
+    cp "$wallpaperDir/$newWp" "$wp"
+    feh --bg-fill "$wp" &
+fi
