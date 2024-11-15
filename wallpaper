@@ -1,0 +1,36 @@
+#! /bin/sh
+
+wallpaperDir="$HOME/pix/wallpapers"
+wp="$HOME/.local/share/background/wp.jpg"
+
+# check if wallpaper dir exists
+if [ ! -d $wallpaperDir ]; then
+    mkdir -p $wallpaperDir
+fi
+
+# check if background dir exists
+if [ ! -d $(dirname $wp) ]; then
+    mkdir -p $(dirname $wp)
+fi
+
+option=$(printf "Random\n$(ls $wallpaperDir)" | dmenu -i -l 15 -p "Wallpaper")
+echo $option
+case $option in
+    "")
+        exit
+        ;;
+    "Random")
+        newWp=$(ls $wallpaperDir | shuf -n 1)
+        ;;
+    *)
+        newWp=$option
+        ;;
+esac
+
+
+if [ "$newWp" = "" ]; then
+    notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty"
+else
+    cp "$wallpaperDir/$newWp" "$wp"
+    feh --bg-fill "$wp" &
+fi
