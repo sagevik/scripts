@@ -8,7 +8,6 @@ Use at your own risk..
 - audioselect    : Choose audio card. 
 - battery	 : Battery status for statusbar
 - brightness     : Setting screenbrightness (via hotkeys using sxhkd). 
-- changewall     : Change wallpaper. 
 - displayselect  : Configure display setup. Copied from Luke Smith
                    https://github.com/LukeSmithxyz/voidrice/blob/master/.local/bin/displayselect 
 - monitorsetup   : Select saved screenlayouts, or create a new with arandr. 
@@ -18,6 +17,7 @@ Use at your own risk..
 - snippet	 : Save and recall snippets of text using hotkeys and dmenu.
 - vmselector     : Start or create vm's in qemu/kvm. 
 - volume         : Setting audio volume (via hotkeys using sxhkd). 
+- wallpaper      : Select or set random wallpaper. 
 - webcam         : Run webcam via ffplay. 
 - websearch      : Websearch from dmenu. 
 
