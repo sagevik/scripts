@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Dmenu script for starting or killing systray applets
+
+applets=("nm-applet" "blueman-applet")
+
+all_running=true
+for applet in "${applets[@]}"; do
+    if ! pgrep -x "$applet" > /dev/null; then
+        all_running=false
+        break
+    fi
+done
+
+# Select action label based on applet status
+action_label=$($all_running && echo "Kill systray" || echo "Start systray")
+
+# Show action in dmenu
+action=$(echo "$action_label" | dmenu -i -p "Systray applets:")
+
+case "$action" in
+    "Kill systray")
+        for applet in "${applets[@]}"; do
+            pkill -x "$applet"
+        done
+        notify-send "Systray Applets" "All systray applets have been killed."
+        ;;
+    "Start systray")
+        for applet in "${applets[@]}"; do
+            if ! pgrep -x "$applet" > /dev/null; then
+                "$applet" &
+            fi
+        done
+        notify-send "Systray Applets" "All systray applets have been started."
+        ;;
+esac
+

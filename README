@@ -15,6 +15,7 @@ Use at your own risk..
 - pow            : Menu for dmenu to lock, suspend, logout, reboot or shutdown. 
 - scrshot        : Take screenshots (via hotkeys using sxhkd). 
 - snippet	 : Save and recall snippets of text using hotkeys and dmenu.
+- systray        : Start or kill systray applets 
 - vmselector     : Start or create vm's in qemu/kvm. 
 - volume         : Setting audio volume (via hotkeys using sxhkd). 
 - wallpaper      : Select or set random wallpaper. 
