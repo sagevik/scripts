@@ -8,7 +8,19 @@ TARGET="/usr/local/bin"
 RED="\033[1;31m"
 GREEN="\033[1;32m"
 YELLOW="\033[1;33m"
+CYAN="\033[1;36m"
 NC="\033[0m"
+
+msg() {
+    msg=" $1 "
+    color_var="${2:-GREEN}"
+    color=$(eval echo "\$$color_var")
+
+    border=$(echo "$msg" | sed 's/./-/g')
+    echo -e "$CYAN$border"
+    echo -e "$color$msg"
+    echo -e "$CYAN$border$NC"
+}
 
 list_scripts() {
     ls "$SCRIPT_DIR" | grep -Ev "install.sh|README"
@@ -87,6 +99,7 @@ process_scripts() {
     esac
 }
 
+msg "Scripts installation"
 echo "What do you want to do?"
 echo "1. Install scripts"
 echo "2. Uninstall scripts"
