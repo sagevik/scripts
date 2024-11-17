@@ -67,10 +67,10 @@ process_scripts() {
         "select")
             if [ "$action" = "install_script" ]; then
                 available_scripts=$(list_uninstalled_scripts)
-                header="Select scripts to install"
+                dothis="install"
             elif [ "$action" = "uninstall_script" ]; then
                 available_scripts=$(list_installed_scripts)
-                header="Select scripts to uninstall"
+                dothis="uninstall"
             fi
 
             if [ -z "$available_scripts" ]; then
@@ -78,6 +78,7 @@ process_scripts() {
                 return
             fi
 
+            header=$(printf "Select scripts to $dothis\n(up/dn/tab keys to (de)select)")
             selected_scripts=$(echo "$available_scripts" | fzf --multi --prompt="> " --header="$header" --layout=reverse --border=rounded)
             for script in $selected_scripts; do
                 $action "$script"
