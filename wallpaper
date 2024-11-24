@@ -32,5 +32,5 @@ if [ "$newWp" = "" ]; then
     notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty"
 else
     cp "$wallpaperDir/$newWp" "$wp"
-    feh --bg-fill "$wp" &
+    xwallpaper --zoom "$wp" &
 fi
