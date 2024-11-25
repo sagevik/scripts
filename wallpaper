@@ -1,36 +1,44 @@
 #! /bin/sh
 
 wallpaperDir="$HOME/pix/wallpapers"
-wp="$HOME/.local/share/background/wp.jpg"
+wp="$HOME/.local/share/background/wp.png"
 
 # check if wallpaper dir exists
-if [ ! -d $wallpaperDir ]; then
-    mkdir -p $wallpaperDir
+if [ ! -d "$wallpaperDir" ]; then
+    mkdir -p "$wallpaperDir"
 fi
 
 # check if background dir exists
-if [ ! -d $(dirname $wp) ]; then
-    mkdir -p $(dirname $wp)
+if [ ! -d "$(dirname "$wp")" ]; then
+    mkdir -p "$(dirname "$wp")"
 fi
 
-option=$(printf "Random\n$(ls $wallpaperDir)" | dmenu -i -l 15 -p "Wallpaper")
-echo $option
+option=$(printf "Random\n$(ls "$wallpaperDir")" | dmenu -i -l 15 -p "Wallpaper")
 case $option in
     "")
         exit
         ;;
     "Random")
-        newWp=$(ls $wallpaperDir | shuf -n 1)
+        newWp=$(ls "$wallpaperDir" | shuf -n 1)
         ;;
     *)
         newWp=$option
         ;;
 esac
 
-
 if [ "$newWp" = "" ]; then
     notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty"
 else
-    cp "$wallpaperDir/$newWp" "$wp"
+    # Get the MIME type of the selected file
+    mimeType=$(file --mime-type -b "$wallpaperDir/$newWp")
+
+    if [ "$mimeType" = "image/png" ]; then
+        # File is already a PNG; just copy it
+        cp "$wallpaperDir/$newWp" "$wp"
+    else
+        # Convert to PNG
+        ffmpeg -loglevel quiet -y -i "$wallpaperDir/$newWp" "$wp"
+    fi
+
     xwallpaper --zoom "$wp" &
 fi
