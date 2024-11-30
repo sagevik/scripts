@@ -1,7 +1,0 @@
-#! /bin/sh
-
-while true; do
-    upd=$(checkupdates | wc -l)
-    echo $upd  > /tmp/packageUpdates.tmp
-    sleep 3600
-done
