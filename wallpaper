@@ -3,6 +3,10 @@
 wallpaperDir="$HOME/pix/wallpapers"
 wp="$HOME/.local/share/background/wp.png"
 
+function set_wallpaper() {
+    xwallpaper --zoom "$wp" &
+}
+
 # check if wallpaper dir exists
 if [ ! -d "$wallpaperDir" ]; then
     mkdir -p "$wallpaperDir"
@@ -13,13 +17,17 @@ if [ ! -d "$(dirname "$wp")" ]; then
     mkdir -p "$(dirname "$wp")"
 fi
 
-option=$(printf "Random\n$(ls "$wallpaperDir")" | dmenu -i -l 15 -p "Wallpaper")
+option=$(printf "Random\nReload\n$(ls "$wallpaperDir")" | dmenu -i -l 15 -p "Wallpaper")
 case $option in
     "")
         exit
         ;;
     "Random")
         newWp=$(ls "$wallpaperDir" | shuf -n 1)
+        ;;
+    "Reload")
+        set_wallpaper
+        exit
         ;;
     *)
         newWp=$option
@@ -40,5 +48,5 @@ else
         ffmpeg -loglevel quiet -y -i "$wallpaperDir/$newWp" "$wp"
     fi
 
-    xwallpaper --zoom "$wp" &
+    set_wallpaper
 fi
