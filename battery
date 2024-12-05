@@ -1,5 +1,10 @@
 #! /bin/sh
 
+if [[ ! -d /sys/class/power_supply/BAT0 ]]; then
+    printf "󱉞"
+    exit
+fi
+
 # File to track battery full status
 status_file="/tmp/battery_status"
 
@@ -9,12 +14,9 @@ battery_charge_status=$(cat /sys/class/power_supply/BAT0/status)
 
 batstat=""
 case $battery_charge_status in
-    "Charging")
-	batstat=" "
-        ;;
     "Full")
 	if [ "$(cat $status_file 2>/dev/null)" != "Full" ]; then
-            notify-send " Battery fully charged" "You can disconnect the charger"
+            notify-send "󰂄 Battery fully charged" "You can disconnect the charger"
 	fi
 	;;
 esac
@@ -23,22 +25,33 @@ esac
 echo "$battery_charge_status" > "$status_file"
 
 bat=""
-if [ "$battery_capacity" -ge 90 ]; then
-    bat=""
-elif [ "$battery_capacity" -ge 75 ]; then
-    bat=""
-elif [ "$battery_capacity" -ge 35 ]; then
-    bat=""
-elif [ "$battery_capacity" -ge 10 ]; then
-    bat=""
+
+if [ "$battery_charge_status" = "Charging" ]; then
+    bat="󰂄"
 else
-    if [ "$battery_charge_status" = "Charging" ]; then
-	  bat=""
+    if [ "$battery_capacity" -ge 90 ]; then
+        bat="󰂂"
+    elif [ "$battery_capacity" -ge 80 ]; then
+        bat="󰂁"
+    elif [ "$battery_capacity" -ge 70 ]; then
+        bat="󰂀"
+    elif [ "$battery_capacity" -ge 60 ]; then
+        bat="󰁿"
+    elif [ "$battery_capacity" -ge 50 ]; then
+        bat="󰁾"
+    elif [ "$battery_capacity" -ge 40 ]; then
+        bat="󰁽"
+    elif [ "$battery_capacity" -ge 30 ]; then
+        bat="󰁼"
+    elif [ "$battery_capacity" -ge 20 ]; then
+        bat="󰁻"
+    elif [ "$battery_capacity" -ge 10 ]; then
+        bat="󰁺"
     else
         notify-send --urgency=critical " Battery critical" "Charge your computer"
-       	bat=" "
+        bat="󰂎"
     fi
 fi
 
-printf "$batstat$bat $battery_capacity%%"
+printf "$bat $battery_capacity%%"
 
