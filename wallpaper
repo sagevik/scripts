@@ -3,7 +3,7 @@
 wallpaperDir="$HOME/pix/wallpapers"
 wp="$HOME/.local/share/background/wp.png"
 
-function set_wallpaper() {
+set_wallpaper() {
     xwallpaper --zoom "$wp" &
 }
 
