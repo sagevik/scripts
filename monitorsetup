@@ -1,14 +1,14 @@
 #!/bin/sh
 
 layoutsdir="$HOME/.screenlayout"
-set_with_arandr="New layout (arandr)"
+set_with_arandr="arandr"
 
 run_dmenu() {
-    { ls "$layoutsdir"; echo "$set_with_arandr"; } | sort | dmenu -i -l 20 -p "Choose monitor setup"
+    { ls "$layoutsdir"; echo "$set_with_arandr"; } | dmenu -i -l 20 -p "Choose monitor setup"
 }
 
 postrun() {
-  $HOME/./.fehbg
+    wallpaper --reload
 }
 
 chosen="$(run_dmenu)"
