@@ -17,7 +17,15 @@ if [ ! -d "$(dirname "$wp")" ]; then
     mkdir -p "$(dirname "$wp")"
 fi
 
-option=$(printf "Random\nReload\n$(ls "$wallpaperDir")" | dmenu -i -l 15 -p "Wallpaper")
+# Set option based on flags or use dmenu
+if [ "$1" = "--reload" ]; then
+    option="Reload"
+elif [ "$1" = "--random" ]; then
+    option="Random"
+else
+    option=$(printf "Random\nReload\n$(ls "$wallpaperDir")" | dmenu -i -l 15 -p "Wallpaper")
+fi
+
 case $option in
     "")
         exit
