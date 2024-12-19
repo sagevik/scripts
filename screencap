@@ -1,0 +1,4 @@
+#! /usr/bin/sh
+
+ffmpeg -y -f x11grab -i :0.0 test.mkv
+
