@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if pgrep -x "ffmpeg" > /dev/null; then
+    KILL=$(printf "Yes\nNo" | dmenu -i -p "Stop recording?")
+    case $KILL in
+        "Yes")
+            pkill -x "ffmpeg"
+            notify-send "Recording" "Screen recording ended "
+            exit 0
+            ;;
+        "No")
+            exit 0
+            ;;
+    esac
+else
+
+    TITLE=$(printf "" | dmenu -i -p "Enter recording title:")
+
+    notify-send "Recording" "Starting recording in 5 seconds"
+    sleep 5
+
+    TITLE="$(echo $TITLE | sed 's/ /_/g')"
+    DIRNAME="$TITLE-$(date '+%s')"
+    mkdir -p "$HOME/vid/screencasts/$DIRNAME"
+
+    #ffmpeg -loglevel fatal -video_size 1600x900 -framerate 30 -f x11grab -i :0.0 -c:v libx264 -preset veryfast "$HOME/videos/screencasts/$DIRNAME/video.mkv" & printf "Video recording started.\n"
+    #ffmpeg -loglevel fatal -framerate 30 -f x11grab -i :0.0 -f alsa -i default -preset veryfast "$HOME/vid/screencasts/$DIRNAME/video.mkv" & notify-send "Recording" "Video recording started.\n"
+    ffmpeg -loglevel quiet -framerate 30 -f x11grab -i :0.0 -f alsa -i default -preset veryfast "$HOME/vid/screencasts/$DIRNAME/video.mkv" & notify-send "Recording" "Video recording started.\n"
+    #aucat -f snd/$SNDDEV -o "$HOME/videos/screencasts/$DIRNAME/audio.wav" > /dev/null & printf "Audio recording started.\n\n"
+
+
+#    printf "Press enter to stop recording"
+#    read lol
+#    kill $(pgrep ffmpeg)
+    #kill $(pgrep aucat)
+
+    #cd "$HOME/vid/screencasts/$DIRNAME"
+    #ffmpeg -loglevel fatal -i video.mkv -i audio.wav -c copy final.mkv
+fi
