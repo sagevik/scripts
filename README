@@ -15,6 +15,7 @@ Use at your own risk..
 - install.sh     : Create or delete symlinks for all or selected scripts in /usr/local/bin. 
 - monitorsetup   : Select saved screenlayouts, or create a new with arandr. 
 - pow            : Menu for dmenu to lock, suspend, logout, reboot or shutdown. 
+- screencast     : Capture a video of the screen. Can be started and stopped from dmenu. 
 - scrshot        : Take screenshots (via hotkeys in dwm). 
 - snippet	 : Save and recall snippets of text using hotkeys and dmenu.
 - systray        : Start or kill systray applets 
