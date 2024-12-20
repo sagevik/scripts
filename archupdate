@@ -23,7 +23,7 @@ RED="\033[0;31m"
 RESET="\033[0m"
 
 # Temp files
-UPDATE_FILE="/tmp/packageUpdates.tmp"
+UPDATE_FILE="/tmp/packageUpdates"
 PID_FILE="/tmp/archupdate.pid"
 
 check_for_updates() {
