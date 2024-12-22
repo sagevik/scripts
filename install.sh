@@ -23,7 +23,7 @@ msg() {
 }
 
 list_scripts() {
-    ls "$SCRIPT_DIR" | grep -Ev "install.sh|README"
+    ls "$SCRIPT_DIR" | grep -Ev "install.sh|README|temp_status.sh"
 }
 
 list_installed_scripts() {

@@ -1,12 +1,8 @@
 #!/bin/sh
 
-TMPFILE="/tmp/tempstatus"
-TMPINFO="( )"
+TMPINFO=" "
 
-update_status() {
-    pkill -RTMIN+5 slstatus
-}
-
+source ~/scripts/temp_status.sh
 
 VIDEODIR="$HOME/vid/screencasts"
 
@@ -15,8 +11,8 @@ if pgrep -x "ffmpeg" > /dev/null; then
     case $KILL in
         "Yes")
             pkill -x "ffmpeg"
-            notify-send "Recording" "Screen recording ended "
-            rm "$TMPFILE"
+            notify-send "Recording" "Screen recording ended"
+            remove_tempinfo "$TMPINFO"
             update_status
             exit 0
             ;;
@@ -25,15 +21,14 @@ if pgrep -x "ffmpeg" > /dev/null; then
             ;;
     esac
 else
-
     TITLE=$(printf "" | dmenu -i -p "Enter recording title:")
     if [ -z "$TITLE" ]; then notify-send "Capture cancelled" && exit 0; fi
 
     TITLE="$(echo $TITLE | sed 's/ /_/g')"
     FILENAME="$TITLE-$(date '+%s')"
     mkdir -p "$VIDEODIR"
-    echo "$TMPINFO" >> "$TMPFILE"
-    ffmpeg -loglevel quiet -framerate 30 -f x11grab -i :0.0 -f alsa -i default -preset veryfast "$VIDEODIR/$FILENAME.mkv" & notify-send "Recording" "Video recording started.\n"
+    ffmpeg -loglevel quiet -framerate 30 -f x11grab -i :0.0 -f alsa -i default -preset veryfast "$VIDEODIR/$FILENAME.mkv" &
+    notify-send "Recording" "Video recording started."
+    add_tempinfo "$TMPINFO"
     update_status
-
 fi
