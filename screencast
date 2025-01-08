@@ -1,10 +1,35 @@
 #!/bin/sh
+TMPDIR="/tmp/tempstatusfiles"
+TMPFILE="/tmp/tempstatus"
 
-TMPINFO=" "
-
-source ~/scripts/temp_status.sh
+RECTEMPFILE="$TMPDIR/$(basename "$0")"
+RECTEMPINFO=" "
 
 VIDEODIR="$HOME/vid/screencasts"
+
+[ -f "$TMPFILE" ] || echo "" > "$TMPFILE"
+[ -d "$TMPDIR" ] || mkdir -p "$TMPDIR"
+
+write_statusfile() {
+    (
+        flock 9
+        content=""
+        
+        for file in "$TMPDIR"/*; do
+            if [ -f "$file" ]; then
+                content+=$(cat "$file")
+                content+=$' '
+            fi
+        done
+        
+        echo "$content" > "$TMPFILE"
+    ) 9>/tmp/tempstatus.lock
+}
+
+update_status() {
+    write_statusfile
+    pkill -RTMIN+5 slstatus
+}
 
 if pgrep -x "ffmpeg" > /dev/null; then
     KILL=$(printf "Yes\nNo" | dmenu -i -p "Stop recording?")
@@ -12,7 +37,7 @@ if pgrep -x "ffmpeg" > /dev/null; then
         "Yes")
             pkill -x "ffmpeg"
             notify-send "Recording" "Screen recording ended"
-            remove_tempinfo "$TMPINFO"
+            rm "$RECTEMPFILE"
             update_status
             exit 0
             ;;
@@ -29,6 +54,6 @@ else
     mkdir -p "$VIDEODIR"
     ffmpeg -loglevel quiet -framerate 30 -f x11grab -i :0.0 -f alsa -i default -preset veryfast "$VIDEODIR/$FILENAME.mkv" &
     notify-send "Recording" "Video recording started."
-    add_tempinfo "$TMPINFO"
+    echo "$RECTEMPINFO" > "$RECTEMPFILE"
     update_status
 fi
