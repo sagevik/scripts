@@ -23,9 +23,10 @@ find_wm() {
 # Start selected vm
 start_vm() {
     start_network
-    virsh start $1 && virt-viewer $1
+    #virsh start $1 && virt-viewer $1
+    virsh start $1
+    virt-manager --no-fork --connect qemu:///system --show-domain-console "$1"
 }
-
 # Select a VM from dmenu
 vm=$(find_wm)
 selected_vm=$(echo "$vm" | dmenu -i -l 5 -p "Start/create VM:")
