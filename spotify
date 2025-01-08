@@ -1,0 +1,5 @@
+#! /usr/bin/sh
+
+# open spotify in a new brave browser window
+
+brave --new-window "https://open.spotify.com"
