@@ -8,6 +8,7 @@ Use at your own risk..
                    Can be run with the -b flag to check for updates hourly in the background, 
                    and --stop flag to stop the background running script. 
 - audioselect    : Choose audio card. 
+- autostart.sh   : Start script used if using login manager
 - battery	 : Battery status for statusbar
 - brightness     : Setting screenbrightness (via hotkeys in dwm). 
 - displayselect  : Configure display setup. Copied from Luke Smith
