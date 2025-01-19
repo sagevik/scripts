@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Pass variables to dmenu
+run_dmenu() {
+	printf "status\nintegrated\nnvidia\nhybrid" | dmenu -i -l 4 -p "Select GPU"
+}
+
+select_gpu(){
+    optimus-manager --switch $1 --no-confirm
+    notify-send --urgency=critical "GPU" "You will be logged out to switch to $1 GPU"
+    #log out
+    sleep 2
+    user=$(whoami)
+    pkill -KILL -u "$user"
+}
+
+chosen="$(run_dmenu)"
+case $chosen in
+    "status")
+        notify-send -t 5000 "GPU status" "$(optimus-manager --status)"
+        ;;
+    "integrated")
+        select_gpu "$chosen"
+        ;;
+    "nvidia")
+        select_gpu "$chosen"
+        ;;
+    "hybrid")
+        select_gpu "$chosen"
+        ;;
+    *)
+        # 
+        ;;
+esac
+
