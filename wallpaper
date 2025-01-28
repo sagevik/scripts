@@ -1,10 +1,26 @@
 #! /bin/sh
 
+if ! command -v magick &>/dev/null; then
+    notify-send --urgency=critical "Error" "Imagemagick is not installed. Please install it to use this script"
+    exit 1
+fi
+
 wallpaperDir="$HOME/pix/wallpapers"
 wp="$HOME/.local/share/background/wp.png"
+wptmp="$HOME/.local/share/background/wptmp.png"
+loginmanager="/usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png"
 
 set_wallpaper() {
     xwallpaper --zoom "$wp" &
+}
+
+set_login_background() {
+    magick "$wp" -fill "rgba(0, 0, 0, 0.3)" -colorize 80% "$wptmp"
+    # TODO: check if other options to do this
+    # to make the copy command work, the following was done, sudo visudo -> add to sudoers file:
+    # user ALL=(ALL) NOPASSWD: /usr/bin/cp /home/user/.local/share/background/wptmp.png /usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png
+    cp "$wptmp" "$loginmanager"
+    rm "$wptmp"
 }
 
 # check if wallpaper dir exists
@@ -57,4 +73,5 @@ else
     fi
 
     set_wallpaper
+    set_login_background
 fi
