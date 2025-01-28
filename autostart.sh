@@ -1,7 +1,8 @@
 #! /bin/sh
 
 # Keyboard layout
-setxkbmap no -option ctrl:nocaps &
+setxkbmap no -option
+xmodmap ~/.Xmodmap
 
 # Screen resolution
 xrandr --output eDP-1 --primary --mode 1920x1200 --pos 0x0 --rotate normal &
