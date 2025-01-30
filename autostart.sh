@@ -26,6 +26,9 @@ blueman-applet &
 # Polkit
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
+# Volume in statusbar
+volume init &
+
 # Restart loop
 while true; do
     dwm >/dev/null 2>&1

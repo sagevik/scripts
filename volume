@@ -76,6 +76,9 @@ if [ -n "$1" ]; then
         toggle_mute
         update_status
         notify "mute"
+    elif [ "$1" = "init" ]; then
+        sleep 5
+        update_status
     elif [ "$1" = "setvolume" ]; then
         v=$(echo "" | dmenu -p "Set Volume:")
         if [ $? -eq 0 ] && [ $v -gt -1 ] && [ $v -lt 101 ]
