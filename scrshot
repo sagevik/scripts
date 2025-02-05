@@ -4,7 +4,11 @@ OUTDIR="/home/$USER/pix/screenshots"
 OUTFILE="screenshot_$(date '+%Y-%m-%d_%H-%M-%S').png"
 
 notify() {
-    notify-send --icon=camera-photo "Screenshot" "$1 screenshot saved to $OUTFILE"
+    if echo "$1" | grep -q "clip"; then
+        notify-send --icon=camera-photo "Screenshot" "$1 copied to clipboard"
+    else
+        notify-send --icon=camera-photo "Screenshot" "$1 screenshot saved to $OUTFILE"
+    fi
 }
 
 # Create output dir if not exist
@@ -14,8 +18,16 @@ notify() {
 case $1 in
     "selection")
         maim -u -s "$OUTDIR/$OUTFILE" && notify "$1";;
+    "selectionclip")
+        maim -u -s | xclip -selection clipboard -t image/png
+        if [ -n "$(xclip -selection clipboard -o 2>/dev/null)" ]; then
+            notify "$1"
+        fi
+        ;;
     "fullscreen")
         maim -q -d 0.5 "$OUTDIR/$OUTFILE" && notify "$1";;
     "window")
         maim -q -d 0.5 -i "$(xdotool getactivewindow)" "$OUTDIR/$OUTFILE" && notify "$1";;
+    *)
+        exit 0;;
 esac
