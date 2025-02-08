@@ -17,7 +17,8 @@ select_gpu(){
 chosen="$(run_dmenu)"
 case $chosen in
     "status")
-        notify-send -t 5000 "GPU status" "$(optimus-manager --status)"
+        notify-send -t 5000 "GPU status" "$(optimus-manager --print-mode)" --icon="/home/rs/pix/gpu.png"
+        #notify-send -t 5000 "GPU status" "$(optimus-manager --status)"
         ;;
     "integrated")
         select_gpu "$chosen"
