@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# CUPS-related services
+services=("cups" "cups.socket" "cups.path")
+
+# Check if CUPS is running
+if systemctl is-active --quiet cups; then
+    echo "Stopping CUPS services..."
+    sudo systemctl stop "${services[@]}"
+    echo "CUPS is now stopped."
+else
+    echo "Starting CUPS services..."
+    sudo systemctl start "${services[@]}"
+    echo "CUPS is now running. You can print!"
+fi
+

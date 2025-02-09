@@ -11,6 +11,7 @@ Use at your own risk..
 - autostart.sh   : Start script used if using login manager
 - battery	 : Battery status for statusbar
 - brightness     : Setting screenbrightness (via hotkeys in dwm). 
+- cupstoggle     : Toggle services for printing.
 - displayselect  : Configure display setup. Copied from Luke Smith
                    https://github.com/LukeSmithxyz/voidrice/blob/master/.local/bin/displayselect 
 - gpu            : Select gpu with dmenu. Uses optimus-manager
