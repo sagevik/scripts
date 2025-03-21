@@ -2,19 +2,18 @@
 
 # Script for setting screen brightness and showing notification
 
-get_brightness(){
+get_brightness() {
     brightness=$(brightnessctl | grep Current | awk '{ print $4 }' | sed 's/[][()%]//g')
     echo $brightness
 }
 
 notify() {
-	notify-send --icon=video-display -h int:value:"$(get_brightness)%" "Brightness" "$(get_brightness)%"
+    notify-send --icon=video-display -h int:value:"$(get_brightness)%" "Brightness" "$(get_brightness)%"
 }
 
 set_brightness() {
     brightnessctl set "$1"
 }
-
 
 if [ $1 = "up" ]; then
     set_brightness "5%+"
@@ -22,9 +21,13 @@ if [ $1 = "up" ]; then
 elif [ $1 = "down" ]; then
     set_brightness "5%-"
     notify
+elif [ $1 = "setbrightness" ]; then
+    br=$(echo "" | dmenu -p "Set Brightness:")
+    if [ $? -eq 0 ] && [ $br -gt -1 ] && [ $br -lt 101 ]; then
+        set_brightness "$br%"
+        update_status
+        notify
+    fi
 else
-    br=$(echo "" | dmenu -i -p "Set Brightness:")
-    set_brightness "$br%"
     notify
 fi
-
