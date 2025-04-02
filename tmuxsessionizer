@@ -7,10 +7,16 @@ in_tmux() {
     [ -n "$TMUX" ]
 }
 
-# Get tmux session names into an array, excluding _x_
+exit_if_no_selection() {
+    if [[ -z $1 ]]; then
+        exit 0
+    fi
+}
+
+# Get tmux session names into an array, excluding default session _x_
 tmux_sessions=($(tmux ls 2>/dev/null | awk -F: '{print $1}' | grep -v "^_x_$"))
 
-# Add a "New Session" option to the list (optional visual cue)
+# Add a "New Session" option
 session_list=("${tmux_sessions[@]}" "[New Session]")
 
 # Find projects
@@ -23,7 +29,6 @@ if ! in_tmux; then
     exit 0
 fi
 
-
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
@@ -31,12 +36,11 @@ else
     selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="Select or type tmux session: " --print-query | tail -n1)
 fi
 
-if [[ -z $selected ]]; then
-    exit 0
-fi
+exit_if_no_selection "$selected"
 
 if [[ "$selected" = "[New Session]" ]]; then
     selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --print-query | tail -n1)
+    exit_if_no_selection "$selected"
 fi
 
 selected_name=$(basename "$selected" | tr . _)
