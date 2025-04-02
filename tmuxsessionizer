@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# FZF options for centered appearance
+FZF_OPTS="--tmux center,50%,border-native --layout=reverse"
+
+in_tmux() {
+    [ -n "$TMUX" ]
+}
+
+# Get tmux session names into an array, excluding _x_
+tmux_sessions=($(tmux ls 2>/dev/null | awk -F: '{print $1}' | grep -v "^_x_$"))
+
+# Add a "New Session" option to the list (optional visual cue)
+session_list=("${tmux_sessions[@]}" "[New Session]")
+
+# Find projects
+projects=$(find ~/ ~/dev/shell/ ~/dev/python ~/dev/goprojects/ -mindepth 1 -maxdepth 1 -type d)
+
+# If not in tmux, echo message
+if ! in_tmux; then
+    echo ""
+    echo "Start a tmux session before using this tool"
+    exit 0
+fi
+
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+# Use fzf to select a session or create a new one
+    selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="Select or type tmux session: " --print-query | tail -n1)
+fi
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+if [[ "$selected" = "[New Session]" ]]; then
+    selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --print-query | tail -n1)
+fi
+
+selected_name=$(basename "$selected" | tr . _)
+tmux_running=$(pgrep tmux)
+
+if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s $selected_name -c $selected
+    exit 0
+fi
+
+if ! tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux new-session -ds $selected_name -c $selected
+fi
+
+tmux switch-client -t $selected_name
