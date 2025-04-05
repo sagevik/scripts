@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# Searchpaths
+declare -a searchpaths=(
+    ~/
+    ~/dev/shell/
+    ~/dev/python
+    ~/dev/goprojects/
+    )
+
 # FZF options for centered appearance
 FZF_OPTS="--tmux center,50%,border-native --layout=reverse"
 
@@ -20,7 +28,7 @@ tmux_sessions=($(tmux ls 2>/dev/null | awk -F: '{print $1}' | grep -v "^_x_$"))
 session_list=("${tmux_sessions[@]}" "[New Session]")
 
 # Find projects
-projects=$(find ~/ ~/dev/shell/ ~/dev/python ~/dev/goprojects/ -mindepth 1 -maxdepth 1 -type d)
+projects=$(find "${searchpaths[@]}" -mindepth 1 -maxdepth 1 -type d)
 
 # If not in tmux, echo message
 if ! in_tmux; then
