@@ -1,0 +1,47 @@
+#! /bin/sh
+
+# This will delete the oldest timeshift snapshot,
+# and list the remaning snapshots
+
+timeshiftsnapshots=$(sudo timeshift --list)
+
+# Get the total number of snapshots
+snapshot_count=$(echo "$timeshiftsnapshots" | grep -oP '^\d+(?=\s+snapshots,)' | head -n 1)
+
+# Check if snapshot_count is a valid number
+if [ -z "$snapshot_count" ] || ! echo "$snapshot_count" | grep -q '^[0-9]\+$'; then
+    echo "Error: Could not determine the number of snapshots."
+    exit 1
+fi
+
+# If 3 or fewer snapshots exist, skip deletion
+if [ "$snapshot_count" -le 3 ]; then
+    echo "Only $snapshot_count snapshot(s) found. Keeping all snapshots (minimum 3 required)."
+    echo ""
+    echo "Current snapshots:"
+    echo "--------------------"
+    sudo timeshift --list
+    exit 0
+fi
+
+oldestsnapshot=$(echo "$timeshiftsnapshots" | awk '/^0\s+>/{print $3}')
+
+# Check if a snapshot name was found
+if [ -z "$oldestsnapshot" ]; then
+    echo "Error: No snapshot found to delete."
+    exit 1
+fi
+
+sudo timeshift --delete --snapshot "$oldestsnapshot"
+
+# Check if deletion was successful
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "Oldest snapshot ($oldestsnapshot) deleted successfully."
+    echo "Remaining snapshots ($((snapshot_count - 1))):"
+    echo "--------------------"
+    sudo timeshift --list
+else
+    echo "Error: Failed to delete snapshot ($oldestsnapshot)."
+    exit 1
+fi

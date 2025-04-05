@@ -26,6 +26,7 @@ Use at your own risk..
 - spotify         : Open spotify web player in new browser window
 - tmuxsessionizer : Create and navigate tmux sessions. Heavily inspired/copied from ThePrimeagen
                     https://github.com/ThePrimeagen/tmux-sessionizer/blob/master/tmux-sessionizer
+- tsdel           : Delete the oldest timeshift snapshot.
 - vmselector      : Start or create vm's in qemu/kvm. 
 - volume          : Setting audio volume (via hotkeys in dwm). 
 - wallpaper       : Select or set random wallpaper. 
