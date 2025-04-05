@@ -40,7 +40,7 @@ fi
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-# Use fzf to select a session or create a new one
+    # Use fzf to select a session or create a new one
     selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="Select or type tmux session: " --print-query | tail -n1)
 fi
 
