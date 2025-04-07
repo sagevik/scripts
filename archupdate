@@ -78,11 +78,26 @@ else
         echo "Updating system"
 
         # Create backup
-        sudo timeshift --create
+        if ! sudo timeshift --create; then
+            echo "Error: Snapshot creation failed"
+            notify-send "archupdate" "Snapshot creation failed"
+            exit 1
+        fi
 
         # Update packages
         echo "$updates"
-        sudo pacman -Syu
+        if ! sudo pacman -Syu; then
+            echo "Error: Package update failed"
+            notify-send "archupdate" "Package update failed"
+            exit 1
+        fi
+
+        # Update GRUB
+        if ! sudo grub-mkconfig -o /boot/grub/grub.cfg; then
+            echo "Error: GRUB update failed"
+            notify-send "archupdate" "GRUB update failed"
+            exit 1
+        fi
 
         # Reset packageUpdates file
         echo "0" > "$UPDATE_FILE"
