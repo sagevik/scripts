@@ -15,7 +15,7 @@ set_wallpaper() {
 }
 
 set_login_background() {
-    magick "$wp" -fill "rgba(0, 0, 0, 0.3)" -colorize 80% "$wptmp"
+    magick "$wp" -fill "rgba(0, 0, 0, 0.3)" -colorize 70% "$wptmp"
     # TODO: check if other options to do this
     # to make the copy command work, the following was done, sudo visudo -> add to sudoers file:
     # user ALL=(ALL) NOPASSWD: /usr/bin/cp /home/user/.local/share/background/wptmp.png /usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png
