@@ -1,8 +1,8 @@
-#! /bin/sh
+#!/bin/sh
 
-# This will delete the oldest timeshift snapshot,
-# and list the remaning snapshots
+# This will delete the oldest Timeshift snapshot and list the remaining snapshots
 
+# Get initial snapshot list
 timeshiftsnapshots=$(sudo timeshift --list)
 
 # Get the total number of snapshots
@@ -24,6 +24,7 @@ if [ "$snapshot_count" -le 3 ]; then
     exit 0
 fi
 
+# Identify the oldest snapshot
 oldestsnapshot=$(echo "$timeshiftsnapshots" | awk '/^0\s+>/{print $3}')
 
 # Check if a snapshot name was found
@@ -32,16 +33,24 @@ if [ -z "$oldestsnapshot" ]; then
     exit 1
 fi
 
-sudo timeshift --delete --snapshot "$oldestsnapshot"
-
-# Check if deletion was successful
-if [ $? -eq 0 ]; then
-    echo ""
-    echo "Oldest snapshot ($oldestsnapshot) deleted successfully."
-    echo "Remaining snapshots ($((snapshot_count - 1))):"
-    echo "--------------------"
-    sudo timeshift --list
-else
+# Delete the oldest snapshot
+echo "Deleting oldest snapshot ($oldestsnapshot)..."
+if ! sudo timeshift --delete --snapshot "$oldestsnapshot"; then
     echo "Error: Failed to delete snapshot ($oldestsnapshot)."
     exit 1
 fi
+
+# Update GRUB to reflect the deletion
+echo "Updating GRUB menu..."
+if ! sudo grub-mkconfig -o /boot/grub/grub.cfg; then
+    echo "Error: Failed to update GRUB."
+    exit 1
+fi
+
+# Confirm success and list remaining snapshots
+echo ""
+echo "Oldest snapshot ($oldestsnapshot) deleted successfully."
+echo "Remaining snapshots ($((snapshot_count - 1))):"
+echo "--------------------"
+sudo timeshift --list
+
