@@ -51,6 +51,7 @@ if [[ "$selected" = "[New Session]" ]]; then
     exit_if_no_selection "$selected"
 fi
 
+selected=${selected// /_}
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
