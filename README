@@ -8,25 +8,26 @@ Use at your own risk..
                     Can be run with the -b flag to check for updates hourly in the background, 
                     and --stop flag to stop the background running script. 
 - audioselect     : Choose audio card. 
-- autostart.sh    : Start script used if using login manager
-- battery	      : Battery status for statusbar
+- autostart.sh    : Start script used if using login manager. 
+- battery         : Battery status for statusbar. 
 - brightness      : Setting screenbrightness (via hotkeys in dwm). 
-- cupstoggle      : Toggle services for printing.
-- displayselect   : Configure display setup. Copied from Luke Smith
-                    https://github.com/LukeSmithxyz/voidrice/blob/master/.local/bin/displayselect 
-- gpu             : Select gpu with dmenu. Uses optimus-manager
+- cht.sh          : Query cht.sh from tmux. Heavily inspired/copied from ThePrimeagen. 
+- cupstoggle      : Toggle services for printing. 
+- displayselect   : Configure display setup. Copied from Luke Smith. 
+                    https://github.com/LukeSmithxyz/voidrice/blob/master/.local/bin/displayselect. 
+- gpu             : Select gpu with dmenu. Uses optimus-manager. 
 - install.sh      : Create or delete symlinks for all or selected scripts in /usr/local/bin. 
 - monitorsetup    : Select saved screenlayouts, or create a new with arandr. 
 - pow             : Menu for dmenu to lock, suspend, logout, reboot or shutdown. 
-- README          : This file
+- README          : This file. 
 - screencast      : Capture a video of the screen. Can be started and stopped from dmenu. 
 - scrshot         : Take screenshots (via hotkeys in dwm). 
-- snippet	      : Save and recall snippets of text using hotkeys and dmenu.
+- snippet         : Save and recall snippets of text using hotkeys and dmenu. 
 - systray         : Start or kill systray applets 
-- spotify         : Open spotify web player in new browser window
-- tmuxsessionizer : Create and navigate tmux sessions. Heavily inspired/copied from ThePrimeagen
-                    https://github.com/ThePrimeagen/tmux-sessionizer/blob/master/tmux-sessionizer
-- tsdel           : Delete the oldest timeshift snapshot.
+- spotify         : Open spotify web player in new browser window. 
+- tmuxsessionizer : Create and navigate tmux sessions. Heavily inspired/copied from ThePrimeagen. 
+                    https://github.com/ThePrimeagen/tmux-sessionizer/blob/master/tmux-sessionizer 
+- tsdel           : Delete the oldest timeshift snapshot. 
 - vmselector      : Start or create vm's in qemu/kvm. 
 - volume          : Setting audio volume (via hotkeys in dwm). 
 - wallpaper       : Select or set random wallpaper. 
