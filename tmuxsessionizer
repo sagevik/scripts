@@ -10,7 +10,7 @@ declare -a searchpaths=(
     )
 
 # FZF options for centered appearance
-FZF_OPTS="--tmux center,50%,border-native --layout=reverse"
+FZF_OPTS="--tmux center,50%,border-native --layout=reverse --no-preview"
 
 in_tmux() {
     [ -n "$TMUX" ]
