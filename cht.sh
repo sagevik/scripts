@@ -5,7 +5,7 @@ if [[ -z "$TMUX" ]]; then
     exit 0
 fi
 
-FZF_OPTS="--tmux center,50%,25%,border-native --layout=reverse"
+FZF_OPTS="--tmux center,50%,25%,border-native --layout=reverse --no-preview"
 selected=`cat ~/.config/tmux/tmux-cht-languages ~/.config/tmux/tmux-cht-command | fzf $FZF_OPTS`
 if [[ -z $selected ]]; then
     exit 0
