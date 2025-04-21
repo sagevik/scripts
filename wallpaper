@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 if ! command -v magick &>/dev/null; then
     notify-send --urgency=critical "Error" "Imagemagick is not installed. Please install it to use this script"
@@ -9,6 +9,7 @@ wallpaperDir="$HOME/pix/wallpapers"
 wp="$HOME/.local/share/background/wp.png"
 wptmp="$HOME/.local/share/background/wptmp.png"
 loginmanager="/usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png"
+currentFile="$wallpaperDir/.current"
 
 set_wallpaper() {
     xwallpaper --zoom "$wp" &
@@ -23,14 +24,20 @@ set_login_background() {
     rm "$wptmp"
 }
 
-# check if wallpaper dir exists
+# Check if wallpaper dir exists
 if [ ! -d "$wallpaperDir" ]; then
     mkdir -p "$wallpaperDir"
 fi
 
-# check if background dir exists
+# Check if background dir exists
 if [ ! -d "$(dirname "$wp")" ]; then
     mkdir -p "$(dirname "$wp")"
+fi
+
+# Get the current wallpaper name from .current file (if it exists)
+currentWp=""
+if [ -f "$currentFile" ]; then
+    currentWp=$(cat "$currentFile")
 fi
 
 # Set option based on flags or use dmenu
@@ -39,7 +46,9 @@ if [ "$1" = "--reload" ]; then
 elif [ "$1" = "--random" ]; then
     option="Random"
 else
-    option=$(printf "Random\nReload\n$(ls "$wallpaperDir")" | dmenu -i -l 15 -p "Wallpaper")
+    # List wallpapers excluding .current and current wallpaper
+    wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$")
+    option=$(printf "Random\nReload\n${wallpaperList}" | dmenu -i -l 15 -p "Wallpaper")
 fi
 
 case $option in
@@ -47,7 +56,8 @@ case $option in
         exit
         ;;
     "Random")
-        newWp=$(ls "$wallpaperDir" | shuf -n 1)
+        # Select a random wallpaper excluding the current one and .current
+        newWp=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" | shuf -n 1)
         ;;
     "Reload")
         set_wallpaper
@@ -59,7 +69,7 @@ case $option in
 esac
 
 if [ "$newWp" = "" ]; then
-    notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty"
+    notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty or no valid wallpapers available"
 else
     # Get the MIME type of the selected file
     mimeType=$(file --mime-type -b "$wallpaperDir/$newWp")
@@ -72,6 +82,10 @@ else
         ffmpeg -loglevel quiet -y -i "$wallpaperDir/$newWp" "$wp"
     fi
 
+    # Save the new wallpaper name to .current
+    echo "$newWp" > "$currentFile"
+
     set_wallpaper
     set_login_background
 fi
+
