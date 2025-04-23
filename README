@@ -24,7 +24,6 @@ Use at your own risk..
 - scrshot         : Take screenshots (via hotkeys in dwm). 
 - snippet         : Save and recall snippets of text using hotkeys and dmenu. 
 - systray         : Start or kill systray applets 
-- spotify         : Open spotify web player in new browser window. 
 - tmuxsessionizer : Create and navigate tmux sessions. Heavily inspired/copied from ThePrimeagen. 
                     https://github.com/ThePrimeagen/tmux-sessionizer/blob/master/tmux-sessionizer 
 - tsdel           : Delete the oldest timeshift snapshot. 
