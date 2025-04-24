@@ -5,7 +5,7 @@ declare -a searchpaths=(
     ~/
     ~/dev/c/
     ~/dev/shell/
-    ~/dev/python
+    ~/dev/python/
     ~/dev/goprojects/
     )
 
