@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Script for changing colorscheme in dwm and dmenu
+
+if [ ! -d ~/.config/sucklesscolors ]; then
+    notify-send "No colors directory found"
+    exit 0
+fi
+
+colors=$(ls ~/.config/sucklesscolors | grep -v "current")
+
+colorscheme=$(printf "%s\n" "$colors" | dmenu -i -l 5 -p "Select colorscheme: ")
+if [ -z "${colorscheme// /}" ]; then
+    exit 0
+fi
+
+if [ ! -f ~/.config/sucklesscolors/"$colorscheme" ]; then
+    notify-send "Invalid colorscheme selected"
+    exit 0
+fi
+
+ln -sf ~/.config/sucklesscolors/"$colorscheme" ~/.config/sucklesscolors/current || {
+    notify-send "Failed to link colorscheme"
+    exit 1
+}
+
+xrdb -merge ~/.config/sucklesscolors/current || {
+    notify-send "Failed to merge X resources"
+    exit 1
+}
+
+# Reload dwm
+killall -SIGUSR1 dwm || {
+    notify-send "Failed to reload dwm"
+    exit 1
+}

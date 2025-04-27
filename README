@@ -12,6 +12,7 @@ Use at your own risk..
 - battery         : Battery status for statusbar. 
 - brightness      : Setting screenbrightness (via hotkeys in dwm). 
 - cht.sh          : Query cht.sh from tmux. Heavily inspired/copied from ThePrimeagen. 
+- colorselector   : Choose colorscheme for dwm.
 - cupstoggle      : Toggle services for printing. 
 - displayselect   : Configure display setup. Copied from Luke Smith. 
                     https://github.com/LukeSmithxyz/voidrice/blob/master/.local/bin/displayselect. 
