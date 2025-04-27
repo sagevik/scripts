@@ -4,6 +4,7 @@
 setxkbmap no -option
 xmodmap ~/.Xmodmap
 
+
 # Screen resolution
 xrandr --output eDP-1 --primary --mode 1920x1200 --pos 0x0 --rotate normal &
 
@@ -31,6 +32,10 @@ volume init &
 
 # Restart loop
 while true; do
+    # merge X resources
+    if [ -f ~/.config/sucklesscolors/current ]; then
+        xrdb -merge ~/.config/sucklesscolors/current
+    fi
     dwm >/dev/null 2>&1
 done
 
