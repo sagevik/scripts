@@ -29,7 +29,7 @@ get_snippet() {
 }
 
 set_snippet() {
-    snippet="$(xclip -o)"
+    snippet="$(xclip -selection clipboard -o)"
     if [ -z "$snippet" ] || [ "$(echo "$snippet" | tr -d  '[:space:]')" = "" ]; then
         notify-send "Error" "Cannot save empty snippet"
 	return
