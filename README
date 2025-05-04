@@ -21,6 +21,7 @@ Use at your own risk..
 - monitorsetup    : Select saved screenlayouts, or create a new with arandr. 
 - pow             : Menu for dmenu to lock, suspend, logout, reboot or shutdown. 
 - README          : This file. 
+- scratch         : Set up scratchpads. 
 - screencast      : Capture a video of the screen. Can be started and stopped from dmenu. 
 - scrshot         : Take screenshots (via hotkeys in dwm). 
 - snippet         : Save and recall snippets of text using hotkeys and dmenu. 

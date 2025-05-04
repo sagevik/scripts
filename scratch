@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+case "$1" in
+    ScratchA) 		
+        entry="kitty -T ScratchA -e bitwarden" 		
+        ;;
+    ScratchS) 		
+        entry="kitty -T ScratchS -e nvim"		
+        ;;
+    ScratchD)
+        entry="kitty -T ScratchD"
+        ;;
+    ScratchF)
+        entry="kitty -T ScratchF -e yazi"
+        ;;
+    ScratchV)
+        entry="kitty -T ScratchV -e pavucontrol"
+        ;;
+esac
+
+# Toggle or launch the scratchpad
+xdotool search --onlyvisible --name "$1" windowunmap \
+    || xdotool search --name "$1" windowmap \
+    || $entry &
