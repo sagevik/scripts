@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Update script for arch
 # This script can be used to check for and install package updates on an arch based system.
@@ -27,14 +27,38 @@ UPDATE_FILE="/tmp/packageUpdates"
 PID_FILE="/tmp/archupdate.pid"
 
 check_for_updates() {
-    updates=$(checkupdates)
-    echo "$updates"
+    # Check pacman updates
+    pacman_updates=$(checkupdates 2>/dev/null)
+    pacman_count=$(echo "$pacman_updates" | grep -v '^$' | wc -l)
+
+    # Check AUR updates using yay
+    aur_updates=$(yay -Qua 2>/dev/null)
+    aur_count=$(echo "$aur_updates" | grep -v '^$' | wc -l)
+
+    # Output updates if any
+    if [ -n "$pacman_updates" ]; then
+        echo "Pacman updates:"
+        echo "$pacman_updates"
+        echo
+    fi
+    if [ -n "$aur_updates" ]; then
+        echo "AUR updates:"
+        echo "$aur_updates"
+    fi
+
+    # Return total count for use in other functions
+    echo $((pacman_count + aur_count))
 }
 
 background_update_checker() {
     while true; do
-        upd=$(checkupdates | wc -l)
-        echo "$upd" > "$UPDATE_FILE"
+        # Count pacman updates
+        pacman_upd=$(checkupdates 2>/dev/null | wc -l)
+        # Count AUR updates
+        aur_upd=$(yay -Qua 2>/dev/null | wc -l)
+        # Total updates
+        total_upd=$((pacman_upd + aur_upd))
+        echo "$total_upd" > "$UPDATE_FILE"
         sleep 3600
     done
 }
@@ -60,14 +84,15 @@ elif [ "$1" = "--stop" ]; then
     exit 0
 fi
 
-updates=$(check_for_updates)
+total_updates=$(check_for_updates)
+update_count=$(echo "$total_updates" | tail -n 1)
 
-if [ -z "$updates" ]; then
+if [ "$update_count" -eq 0 ]; then
     echo "No updates available"
     notify-send "archupdate" "No updates available"
 else
     echo -e "${GREEN}The following updates are available:${RESET}"
-    echo "$updates"
+    echo "$total_updates" | head -n -1 # Display all but the last line (count)
 
     # Prompt for confirmation
     echo
@@ -84,9 +109,8 @@ else
             exit 1
         fi
 
-        # Update packages
-        echo "$updates"
-        if ! sudo pacman -Syu; then
+        # Update packages (pacman and AUR) using yay
+        if ! yay -Syu; then
             echo "Error: Package update failed"
             notify-send "archupdate" "Package update failed"
             exit 1
