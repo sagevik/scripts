@@ -1,13 +1,28 @@
 #!/usr/bin/env bash
 
+# File containing additional search paths
+SEARCHPATHS_FILE="$HOME/dev/.sessionizerpaths"
+
 # Searchpaths
 declare -a searchpaths=(
     ~/
+    ~/dev/
     ~/dev/c/
     ~/dev/shell/
-    ~/dev/python/
+    ~/dev/python
     ~/dev/goprojects/
     )
+
+# Append paths from SEARCHPATHS_FILE if it exists
+if [[ -f "$SEARCHPATHS_FILE" ]]; then
+    while IFS= read -r line; do
+        # Skip empty lines or lines starting with #
+        [[ -z "$line" || "$line" =~ ^# ]] && continue
+        # Expand tilde (~) to $HOME
+        line="${line/#\~/$HOME}"
+        searchpaths+=("$line")
+    done < "$SEARCHPATHS_FILE"
+fi
 
 # FZF options for centered appearance
 FZF_OPTS="--tmux center,65,35,border-native --layout=reverse --no-preview"
