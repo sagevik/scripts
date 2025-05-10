@@ -3,6 +3,8 @@
 # File containing additional search paths
 SEARCHPATHS_FILE="$HOME/dev/.sessionizerpaths"
 
+FZF_OPTS="--layout=reverse --no-preview"
+
 # Searchpaths
 declare -a searchpaths=(
     ~/
@@ -24,11 +26,25 @@ if [[ -f "$SEARCHPATHS_FILE" ]]; then
     done < "$SEARCHPATHS_FILE"
 fi
 
-# FZF options for centered appearance
-FZF_OPTS="--tmux center,65,35,border-native --layout=reverse --no-preview"
 
-in_tmux() {
-    [ -n "$TMUX" ]
+switch_to() {
+    if [[ -z $TMUX ]]; then
+        tmux attach-session -t $1
+    else
+        tmux switch-client -t $1
+    fi
+}
+
+has_session() {
+    tmux list-sessions | grep -q "^$1:"
+}
+
+hydrate() {
+    if [ -f $2/.tmux-sessionizer ]; then
+        tmux send-keys -t $1 "source $2/.tmux-sessionizer" c-M
+    elif [ -f $HOME/.tmux-sessionizer ]; then
+        tmux send-keys -t $1 "source $HOME/.tmux-sessionizer" c-M
+    fi
 }
 
 exit_if_no_selection() {
@@ -46,18 +62,11 @@ session_list=("${tmux_sessions[@]}" "[New Session]")
 # Find projects
 projects=$(find "${searchpaths[@]}" -mindepth 1 -maxdepth 1 -type d)
 
-# If not in tmux, echo message
-if ! in_tmux; then
-    echo ""
-    echo "Start a tmux session before using this tool"
-    exit 0
-fi
-
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
     # Use fzf to select a session or create a new one
-    selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="TMUX: select/create session > " --print-query | tail -n1)
+    selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="Select or type tmux session: " --print-query | tail -n1)
 fi
 
 exit_if_no_selection "$selected"
@@ -73,11 +82,13 @@ tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
     tmux new-session -s $selected_name -c $selected
+    hydrate $selected_name -c $selected
     exit 0
 fi
 
 if ! tmux has-session -t=$selected_name 2> /dev/null; then
     tmux new-session -ds $selected_name -c $selected
+    hydrate $selected_name -c $selected
 fi
 
-tmux switch-client -t $selected_name
+switch_to $selected_name
