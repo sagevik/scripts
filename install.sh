@@ -23,7 +23,7 @@ msg() {
 }
 
 list_scripts() {
-    ls "$SCRIPT_DIR" | grep -Ev "install.sh|README|temp_status.sh|autostart.sh"
+    ls "$SCRIPT_DIR" | grep -Ev "install.sh|README|temp_status.sh|autostart.sh|\.tmp$"
 }
 
 list_installed_scripts() {
@@ -101,31 +101,34 @@ process_scripts() {
 
 msg "Scripts installation"
 echo "What do you want to do?"
-echo "1. Install scripts"
-echo "2. Uninstall scripts"
+echo -e "${GREEN}1. Install scripts"
+echo -e "${RED}2. Uninstall scripts${NC}"
 read -p "Choose an option (1 or 2): " choice
+# echo -e "$NC"
 
 if [ "$choice" = "1" ]; then
-    echo "Install mode:"
-    echo "1. All scripts"
-    echo "2. Select scripts"
+    echo ""
+    msg "Install mode:"
+    echo -e "${RED}1. All scripts"
+    echo -e "${GREEN}2. Select scripts${NC}"
     read -p "Choose an option (1 or 2): " mode
     case "$mode" in
         1) process_scripts install_script "all" ;;
         2) process_scripts install_script "select" ;;
-        *) echo "Invalid option. Exiting." ;;
+        *) echo -e "${RED}Invalid option. Exiting.${NC}" ;;
     esac
 elif [ "$choice" = "2" ]; then
-    echo "Uninstall mode:"
-    echo "1. All scripts"
-    echo "2. Select scripts"
+    echo ""
+    msg "Uninstall mode:"
+    echo -e "${RED}1. All scripts"
+    echo -e  "${GREEN}2. Select scripts${NC}"
     read -p "Choose an option (1 or 2): " mode
     case "$mode" in
         1) process_scripts uninstall_script "all" ;;
         2) process_scripts uninstall_script "select" ;;
-        *) echo "Invalid option. Exiting." ;;
+        *) echo -e "${RED}Invalid option. Exiting.${NC}" ;;
     esac
 else
-    echo "Invalid option. Exiting."
+    echo -e "${RED}Invalid option. Exiting.${NC}"
 fi
 
