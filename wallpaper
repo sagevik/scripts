@@ -45,10 +45,13 @@ if [ "$1" = "--reload" ]; then
     option="Reload"
 elif [ "$1" = "--random" ]; then
     option="Random"
+elif [ "$1" = "--nsxiv" ]; then
+    option="nsxiv"
+
 else
     # List wallpapers excluding .current and current wallpaper
     wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$")
-    option=$(printf "Random\nReload\n${wallpaperList}" | dmenu -i -l 15 -p "Wallpaper")
+    option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | dmenu -i -l 15 -p "Wallpaper")
 fi
 
 case $option in
@@ -62,6 +65,14 @@ case $option in
     "Reload")
         set_wallpaper
         exit
+        ;;
+    "Preview")
+        # Select a wallpaper using nsxiv for preview
+        imgpath=$(nsxiv -f -r /home/rs/pix/wallpapers -t --alpha-layer -o -b)
+        if [ -z "$imgpath" ]; then
+            exit
+        fi
+        newWp=$(basename "$imgpath")
         ;;
     *)
         newWp=$option
