@@ -26,6 +26,10 @@ RESET="\033[0m"
 UPDATE_FILE="/tmp/packageUpdates"
 PID_FILE="/tmp/archupdate.pid"
 
+update_statusbar() {
+    pkill -RTMIN+5 slstatus
+}
+
 check_for_updates() {
     # Check pacman updates
     pacman_updates=$(checkupdates 2>/dev/null)
@@ -59,6 +63,7 @@ background_update_checker() {
         # Total updates
         total_upd=$((pacman_upd + aur_upd))
         echo "$total_upd" > "$UPDATE_FILE"
+        update_statusbar
         sleep 3600
     done
 }
@@ -128,6 +133,7 @@ else
 
         # Notify
         notify-send "archupdate" "Finished updating"
+        update_statusbar
     else
         echo "Update canceled"
         notify-send "archupdate" "Update canceled by user"
