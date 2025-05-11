@@ -3,7 +3,7 @@
 # Select and stow dotfile folders using fzf
 
 # Dotfiles directory
-DOTFILES_DIR="$HOME/dev/dots"
+DOTFILES_DIR="$HOME/dots"
 
 # Define color codes
 RED="\033[1;31m"
@@ -55,10 +55,17 @@ if [ -z "$selected_folders" ]; then
     exit 0
 fi
 
-# Stow each selected folder
+# Unstow and stow each selected folder
 for folder in $selected_folders; do
+    echo -e "${CYAN}Unstowing $folder...${NC}"
+    if stow -D -d "$DOTFILES_DIR" -t "$HOME" "$folder"; then
+        echo -e "Folder $folder -> ${GREEN}unstowed successfully${NC}"
+    else
+        echo -e "Folder $folder -> ${RED}failed to unstow${NC}"
+    fi
+
     echo -e "${CYAN}Stowing $folder...${NC}"
-    if stow -R -d "$DOTFILES_DIR" -t "$HOME" "$folder"; then
+    if stow -d "$DOTFILES_DIR" -t "$HOME" "$folder"; then
         echo -e "Folder $folder -> ${GREEN}stowed successfully${NC}"
     else
         echo -e "Folder $folder -> ${RED}failed to stow${NC}"
