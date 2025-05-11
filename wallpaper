@@ -50,7 +50,7 @@ elif [ "$1" = "--nsxiv" ]; then
 
 else
     # List wallpapers excluding .current and current wallpaper
-    wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$")
+    wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" -e "^README\.md$")
     option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | dmenu -i -l 15 -p "Wallpaper")
 fi
 
@@ -68,7 +68,7 @@ case $option in
         ;;
     "Preview")
         # Select a wallpaper using nsxiv for preview
-        imgpath=$(nsxiv -f -r /home/rs/pix/wallpapers -t --alpha-layer -o -b)
+        imgpath=$(nsxiv -r /home/rs/pix/wallpapers -t --alpha-layer -o -b)
         if [ -z "$imgpath" ]; then
             exit
         fi
