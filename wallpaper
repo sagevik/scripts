@@ -66,8 +66,8 @@ case $option in
         newWp=$(cat $currentFile)
         ;;
     "Preview")
-        # Select a wallpaper using nsxiv for preview
-        imgpath=$(nsxiv -r /home/rs/pix/wallpapers -t --alpha-layer -o -b)
+        # Select a wallpaper using nsxiv for preview, wpicker name used to set floating window in dwm
+        imgpath=$(nsxiv -r -N wpicker /home/rs/pix/wallpapers -t --alpha-layer -o -b)
         if [ -z "$imgpath" ]; then
             exit
         fi
