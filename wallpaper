@@ -63,8 +63,7 @@ case $option in
         newWp=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" | shuf -n 1)
         ;;
     "Reload")
-        set_wallpaper
-        exit
+        newWp=$(cat $currentFile)
         ;;
     "Preview")
         # Select a wallpaper using nsxiv for preview
