@@ -30,6 +30,7 @@ if [ ! -d ~/.config/sucklesscolors ]; then
 fi
 
 colors=$(ls ~/.config/sucklesscolors | grep -v "current")
+num_colors=$(echo "$colors" | wc -l)
 
 colorscheme=$(printf "%s\n" "$colors" | dmenu -i -l 5 -p "Select colorscheme: ")
 if [ -z "${colorscheme// /}" ]; then
