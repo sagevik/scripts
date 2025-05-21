@@ -7,9 +7,13 @@ fi
 
 wallpaperDir="$HOME/pix/wallpapers"
 wp="$HOME/.local/share/background/wp.png"
-wptmp="$HOME/.local/share/background/wptmp.png"
 loginmanager="/usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png"
 currentFile="$wallpaperDir/.current"
+
+desaturate_and_colorize() {
+    magick "$wp" -modulate 100,0 "$wp"
+    magick "$wp" -fill "rgba(0, 0, 0, 1.0)" -colorize 70% "$wp"
+}
 
 set_wallpaper() {
     xwallpaper --zoom "$wp" &
@@ -18,7 +22,7 @@ set_wallpaper() {
 set_login_background() {
     # TODO: check if other options to do this
     # to make the copy command work, the following was done, sudo visudo -> add to sudoers file:
-    # user ALL=(ALL) NOPASSWD: /usr/bin/cp /home/user/.local/share/background/wptmp.png /usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png
+    # user ALL=(ALL) NOPASSWD: /usr/bin/cp /home/user/.local/share/background/wp.png /usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png
     cp "$wp" "$loginmanager"
 }
 
@@ -61,7 +65,8 @@ case $option in
         newWp=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" | shuf -n 1)
         ;;
     "Reload")
-        newWp=$(cat $currentFile)
+        set_wallpaper
+        exit
         ;;
     "Preview")
         # Select a wallpaper using nsxiv for preview, wpicker name used to set floating window in dwm
@@ -93,12 +98,8 @@ else
     # Save the new wallpaper name to .current
     echo "$newWp" > "$currentFile"
 
-    echo "$wallpaperDir/$newWp"
-    echo "$wp"
-
     # Desaturate and colorize image
-    magick "$wp" -modulate 100,0 "$wp"
-    magick "$wp" -fill "rgba(0, 0, 0, 1.0)" -colorize 70% "$wp"
+    desaturate_and_colorize
 
     set_wallpaper
     set_login_background
