@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Script to edit configs using fzf, launchable from terminal or dmenu
+
+# Declare associative array for configuration files
+declare -A configs=(
+    ["bat"]="$HOME/.config/bat/config"
+    ["dunst"]="$HOME/.config/dunst/dunstrc"
+    ["ghostty"]="$HOME/.config/ghostty/config"
+    ["hyprland"]="$HOME/.config/hypr/hyprland.conf"
+    ["kanata"]="$HOME/.config/kanata/kanata.kbd"
+    ["kitty"]="$HOME/.config/kitty/kitty.conf"
+    ["mpv"]="$HOME/.config/mpv/mpv.conf"
+    ["picom"]="$HOME/.config/picom/picom.conf"
+    ["tmux"]="$HOME/.config/tmux/tmux.conf"
+    ["yazi"]="$HOME/.config/yazi"
+    ["zathura"]="$HOME/.config/zathura/zathurarc"
+    ["zsh"]="$HOME/.config/zsh/.zshrc"
+    # Add more configs as needed
+)
+
+# Function to run fzf menu and open nvim
+run_menu() {
+    trap 'exit 0' INT TERM
+    menu="$(printf '%s\n' "${!configs[@]}" | sort -u | fzf --prompt="Edit config for: " --border=rounded --margin=3% --height 100% --reverse)"
+    if [ -z "$menu" ]; then
+        exit 0
+    fi
+    if [[ -z "${configs[$menu]}" ]]; then
+        exit 0
+    fi
+    nvim "${configs[$menu]}"
+}
+
+# Check if running in a terminal
+if [ -t 0 ]; then
+    # Running in a terminal, execute directly
+    run_menu
+else
+    # Not in a terminal (e.g., launched from dmenu), open a new terminal
+    # ghostty -e bash -c "$0"
+    kitty -- bash -c "$0"
+fi
