@@ -1,32 +1,5 @@
 #!/usr/bin/env bash
 
-# File containing additional search paths
-SEARCHPATHS_FILE="$HOME/dev/.sessionizerpaths"
-
-FZF_OPTS="--layout=reverse --no-preview"
-
-# Searchpaths
-declare -a searchpaths=(
-    ~/
-    ~/dev/
-    ~/dev/c/
-    ~/dev/shell/
-    ~/dev/python
-    ~/dev/goprojects/
-    )
-
-# Append paths from SEARCHPATHS_FILE if it exists
-if [[ -f "$SEARCHPATHS_FILE" ]]; then
-    while IFS= read -r line; do
-        # Skip empty lines or lines starting with #
-        [[ -z "$line" || "$line" =~ ^# ]] && continue
-        # Expand tilde (~) to $HOME
-        line="${line/#\~/$HOME}"
-        searchpaths+=("$line")
-    done < "$SEARCHPATHS_FILE"
-fi
-
-
 switch_to() {
     if [[ -z $TMUX ]]; then
         tmux attach-session -t $1
@@ -47,14 +20,43 @@ hydrate() {
     fi
 }
 
+
+# File containing additional search paths
+SEARCHPATHS_FILE="$HOME/dev/.sessionizerpaths"
+
+# Searchpaths
+declare -a searchpaths=(
+    ~/
+    ~/.config/
+    ~/dev/
+    ~/dev/c/
+    ~/dev/shell/
+    ~/dev/python
+    ~/dev/goprojects/
+    )
+
+# Append paths from SEARCHPATHS_FILE if it exists
+if [[ -f "$SEARCHPATHS_FILE" ]]; then
+    while IFS= read -r line; do
+        # Skip empty lines or lines starting with #
+        [[ -z "$line" || "$line" =~ ^# ]] && continue
+        # Expand tilde (~) to $HOME
+        line="${line/#\~/$HOME}"
+        searchpaths+=("$line")
+    done < "$SEARCHPATHS_FILE"
+fi
+
+# FZF options for centered appearance
+# FZF_OPTS="--tmux center,65,30,border-native --layout=reverse --no-preview"
+FZF_OPTS="--layout=reverse --no-preview"
+
 exit_if_no_selection() {
     if [[ -z $1 ]]; then
         exit 0
     fi
 }
 
-# Get tmux session names into an array, excluding default session _x_
-tmux_sessions=($(tmux ls 2>/dev/null | awk -F: '{print $1}' | grep -v "^_x_$"))
+tmux_sessions=($(tmux ls 2>/dev/null | awk -F: '{print $1}'))
 
 # Add a "New Session" option
 session_list=("${tmux_sessions[@]}" "[New Session]")
@@ -66,14 +68,19 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     # Use fzf to select a session or create a new one
-    selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="Select or type tmux session: " --print-query | tail -n1)
+    selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="TMUX: select/create session > " --print-query | tail -n1)
 fi
 
 exit_if_no_selection "$selected"
 
 if [[ "$selected" = "[New Session]" ]]; then
-    selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --print-query | tail -n1)
+    selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --query="$(basename "$PWD")" --print-query --no-select-1 | tail -n1)
     exit_if_no_selection "$selected"
+fi
+
+# Use current directory if name of new session is "."
+if [[ "$selected" = "." ]]; then
+    selected=$PWD
 fi
 
 selected=${selected// /_}
@@ -82,13 +89,14 @@ tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
     tmux new-session -s $selected_name -c $selected
-    hydrate $selected_name -c $selected
+    hydrate $selected_name $selected
     exit 0
 fi
 
 if ! tmux has-session -t=$selected_name 2> /dev/null; then
     tmux new-session -ds $selected_name -c $selected
-    hydrate $selected_name -c $selected
+    hydrate $selected_name $selected
 fi
 
 switch_to $selected_name
+
