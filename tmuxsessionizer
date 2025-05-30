@@ -20,6 +20,16 @@ hydrate() {
     fi
 }
 
+new_named_session() {
+    current_dir="$PWD"
+    selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --query="$(basename "$PWD")" --print-query --no-select-1 | tail -n1)
+    if [[ "$(basename $current_dir)" = "$selected" ]];then
+        selected="$current_dir"
+    fi
+    exit_if_no_selection "$selected"
+    echo $selected
+}
+
 
 # File containing additional search paths
 SEARCHPATHS_FILE="$HOME/dev/.sessionizerpaths"
@@ -74,8 +84,7 @@ fi
 exit_if_no_selection "$selected"
 
 if [[ "$selected" = "[New Session]" ]]; then
-    selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --query="$(basename "$PWD")" --print-query --no-select-1 | tail -n1)
-    exit_if_no_selection "$selected"
+    selected=$(new_named_session)
 fi
 
 # Use current directory if name of new session is "."
