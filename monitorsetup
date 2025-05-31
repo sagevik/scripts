@@ -1,6 +1,6 @@
 #!/bin/sh
 
-layoutsdir="$HOME/.screenlayout"
+layoutsdir="$HOME/scripts/screenlayouts"
 set_with_arandr="arandr"
 
 run_dmenu() {
