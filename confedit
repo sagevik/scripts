@@ -15,6 +15,7 @@ declare -A configs=(
     ["tmux"]="$HOME/.config/tmux/tmux.conf"
     ["yazi"]="$HOME/.config/yazi"
     ["zathura"]="$HOME/.config/zathura/zathurarc"
+    ["zprofile"]="$HOME/.config/zsh/.zprofile"
     ["zsh"]="$HOME/.config/zsh/.zshrc"
     # Add more configs as needed
 )
