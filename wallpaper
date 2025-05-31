@@ -12,7 +12,7 @@ currentFile="$wallpaperDir/.current"
 
 desaturate_and_colorize() {
     magick "$wp" -modulate 100,0 "$wp"
-    magick "$wp" -fill "rgba(0, 0, 0, 1.0)" -colorize 70% "$wp"
+    magick "$wp" -fill "rgba(0, 0, 0, 1.0)" -colorize 60% "$wp"
 }
 
 set_wallpaper() {
@@ -74,12 +74,14 @@ case $option in
         if [ -z "$imgpath" ]; then
             exit
         fi
+
         newWp=$(basename "$imgpath")
         ;;
     *)
         newWp=$option
         ;;
 esac
+
 
 if [ "$newWp" = "" ]; then
     notify-send --urgency=critical "Wallpaper" "Wallpaper directory empty or no valid wallpapers available"
@@ -100,6 +102,7 @@ else
 
     # Desaturate and colorize image
     desaturate_and_colorize
+
 
     set_wallpaper
     set_login_background
