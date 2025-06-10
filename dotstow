@@ -2,6 +2,11 @@
 
 # Select and stow dotfile folders using fzf
 
+# Uses a terminal "interface", so needs a terminal to run
+if ! [ -t 0 ]; then
+    ghostty -e bash -c "$0"
+fi
+
 # Dotfiles directory
 DOTFILES_DIR="$HOME/dots"
 
