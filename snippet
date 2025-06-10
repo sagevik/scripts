@@ -21,11 +21,11 @@ ensure_snippet_file() {
 get_snippet() {
     # Type out snippet
     #xdotool type $(grep -v '^#' $snippet_file | dmenu -i -l 50 | cut -d' ' -f1)
-    xdotool type $(grep -v '^#' $snippet_file | dmenu -i -l 50)
+    # xdotool type $(grep -v '^#' $snippet_file | dmenu -i -l 50)
 
     # Put snippet on clipboard
     #grep -v '^#' "$snippet_file" | dmenu -i -l 50 | cut -d' ' -f1 | xclip -selection clipboard
-    #grep -v '^#' "$snippet_file" | dmenu -i -l 50 | xclip -selection clipboard
+    grep -v '^#' "$snippet_file" | dmenu -i -l 50 | xclip -selection clipboard
 }
 
 set_snippet() {
