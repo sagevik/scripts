@@ -10,9 +10,11 @@ declare -A configs=(
     ["hyprland"]="$HOME/.config/hypr/hyprland.conf"
     ["kanata"]="$HOME/.config/kanata/kanata.kbd"
     ["kitty"]="$HOME/.config/kitty/kitty.conf"
+    ["niri"]="$HOME/.config/niri/config.kdl"
     ["mpv"]="$HOME/.config/mpv/mpv.conf"
     ["picom"]="$HOME/.config/picom/picom.conf"
     ["tmux"]="$HOME/.config/tmux/tmux.conf"
+    ["waybar"]="$HOME/.config/waybar/config"
     ["yazi"]="$HOME/.config/yazi"
     ["zathura"]="$HOME/.config/zathura/zathurarc"
     ["zprofile"]="$HOME/.config/zsh/.zprofile"
@@ -39,6 +41,6 @@ if [ -t 0 ]; then
     run_menu
 else
     # Not in a terminal (e.g., launched from dmenu), open a new terminal
-    # ghostty -e bash -c "$0"
-    kitty -- bash -c "$0"
+    ghostty -e bash -c "$0"
+    # kitty -- bash -c "$0"
 fi
