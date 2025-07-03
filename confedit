@@ -13,6 +13,7 @@ declare -A configs=(
     ["niri"]="$HOME/.config/niri/config.kdl"
     ["mpv"]="$HOME/.config/mpv/mpv.conf"
     ["picom"]="$HOME/.config/picom/picom.conf"
+    ["qtile"]="$HOME/.config/qtile/config.py"
     ["tmux"]="$HOME/.config/tmux/tmux.conf"
     ["waybar"]="$HOME/.config/waybar/config"
     ["yazi"]="$HOME/.config/yazi"
