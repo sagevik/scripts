@@ -25,7 +25,6 @@ elif [ $1 = "setbrightness" ]; then
     br=$(echo "" | dmenu -p "Set Brightness:")
     if [ $? -eq 0 ] && [ $br -gt -1 ] && [ $br -lt 101 ]; then
         set_brightness "$br%"
-        update_status
         notify
     fi
 else
