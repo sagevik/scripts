@@ -14,19 +14,22 @@ notify() {
 # Create output dir if not exist
 [ -d "$OUTDIR" ] || mkdir -p "$OUTDIR"
 
+prompt="Select Screenshot Type "
+screenshot_type=$(printf "Selection\nClipboard\nFullscreen\nWindow" | dmenu -i -l 4 -p "$prompt")
+
 # Choose type of screenshot
-case $1 in
-    "selection")
+case "$screenshot_type" in
+    "Selection")
         maim -u -s "$OUTDIR/$OUTFILE" && notify "$1";;
-    "selectionclip")
+    "Clipboard")
         maim -u -s | xclip -selection clipboard -t image/png
         if [ -n "$(xclip -selection clipboard -o 2>/dev/null)" ]; then
             notify "$1"
         fi
         ;;
-    "fullscreen")
+    "Fullscreen")
         maim -q -d 0.5 "$OUTDIR/$OUTFILE" && notify "$1";;
-    "window")
+    "Window")
         maim -q -d 0.5 -i "$(xdotool getactivewindow)" "$OUTDIR/$OUTFILE" && notify "$1";;
     *)
         exit 0;;
