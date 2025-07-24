@@ -1,10 +1,11 @@
 #!/bin/sh
 
-layoutsdir="$HOME/scripts/screenlayouts"
+layoutsdir="$HOME/.screenlayout"
 set_with_arandr="arandr"
+menu="dmenu -i -l 10 -p"
 
 run_dmenu() {
-    { ls "$layoutsdir"; echo "$set_with_arandr"; } | dmenu -i -l 20 -p "Choose monitor setup"
+    { ls "$layoutsdir"; echo "$set_with_arandr"; } | $menu "Choose monitor setup"
 }
 
 postrun() {
