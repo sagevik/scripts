@@ -26,6 +26,10 @@ RESET="\033[0m"
 UPDATE_FILE="/tmp/packageUpdates"
 PID_FILE="/tmp/archupdate.pid"
 
+reset_update_file() {
+    echo "0" > "$UPDATE_FILE"
+}
+
 update_statusbar() {
     pkill -RTMIN+5 slstatus
 }
@@ -93,8 +97,10 @@ total_updates=$(check_for_updates)
 update_count=$(echo "$total_updates" | tail -n 1)
 
 if [ "$update_count" -eq 0 ]; then
+    reset_update_file
     echo "No updates available"
     notify-send "archupdate" "No updates available"
+    update_statusbar
 else
     echo -e "${GREEN}The following updates are available:${RESET}"
     echo "$total_updates" | head -n -1 # Display all but the last line (count)
@@ -129,7 +135,7 @@ else
         fi
 
         # Reset packageUpdates file
-        echo "0" > "$UPDATE_FILE"
+        reset_update_file
 
         # Notify
         notify-send "archupdate" "Finished updating"
