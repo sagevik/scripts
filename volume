@@ -6,6 +6,10 @@ MAXVOL=99
 MINVOL=0
 VOLSTEP=1
 
+update_qtile_bar() {
+    qtile cmd-obj -o widget barvolume -f force_update
+}
+
 get_vol(){
     def=$(pactl get-default-sink)
     vol=$(pactl get-sink-volume "$def" | sed -n 's/.* \([0-9]\+\)% .*/\1/p; s/.* \([0-9]\+\)%$/\1/p')
@@ -41,7 +45,11 @@ set_vol() {
 }
 
 update_status() {
-    pkill -RTMIN+5 slstatus
+    if pgrep -x dwm > /dev/null; then
+        pkill -RTMIN+5 slstatus
+    elif pgrep -x qtile > /dev/null; then
+        update_qtile_bar
+    fi
 }
 
 volume_pa() {
@@ -50,14 +58,14 @@ volume_pa() {
 	vol=$(pactl get-sink-volume "$def" | sed -n 's/.* \([0-9]\+\)% .*/\1/p; s/.* \([0-9]\+\)%$/\1/p')
 
 	if [ "$muted" = "yes" ]; then
-		echo " mute"
+		echo "  mute"
 	else
 		if [ "$vol" -ge 65 ]; then
-			echo " $vol%"
+			echo "  $vol%"
 		elif [ "$vol" -ge 40 ]; then
-			echo " $vol%"
+			echo "  $vol%"
 		elif [ "$vol" -ge 0 ]; then
-			echo " $vol%"	
+			echo "  $vol%"	
 		fi
 	fi
 
@@ -66,26 +74,26 @@ volume_pa() {
 if [ -n "$1" ]; then
     if [ "$1" = "up" ] && [ $(get_vol) -le $MAXVOL ]; then
         set_vol "+$VOLSTEP"
-        update_status
         notify
+        update_status
     elif [ "$1" = "down" ] && [ $(get_vol) -ge $MINVOL ]; then
         set_vol "-$VOLSTEP"
-        update_status
         notify
+        update_status
     elif [ "$1" = "mute" ]; then
         toggle_mute
-        update_status
         notify "mute"
+        update_status
     elif [ "$1" = "init" ]; then
         sleep 5
         update_status
     elif [ "$1" = "setvolume" ]; then
-        v=$(echo "" | dmenu -p "Set Volume:")
+        v=$(echo "" | dmenu -l 0 -p "Set Volume:")
         if [ $? -eq 0 ] && [ $v -gt -1 ] && [ $v -lt 101 ]
         then
             set_vol "$v"
-            update_status
             notify
+            update_status
         fi
     fi
 else
