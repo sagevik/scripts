@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rofi="rofi -dmenu -i -p"
+
+output=$(echo -e "test\nny test\nstuff" | $rofi "Works?")
+echo $output

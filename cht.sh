@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 if [[ -z "$TMUX" ]]; then
     notify-send "cht.sh" "Will only run in a tmux session"

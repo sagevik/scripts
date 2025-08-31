@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Script for setting screen brightness and showing notification
 
@@ -17,12 +17,12 @@ set_brightness() {
 
 if [ $1 = "up" ]; then
     set_brightness "5%+"
-    notify
+    # notify
 elif [ $1 = "down" ]; then
     set_brightness "5%-"
-    notify
+     # notify
 elif [ $1 = "setbrightness" ]; then
-    br=$(echo "" | dmenu -p "Set Brightness:")
+    br=$(echo "" | rofi -dmenu -l 0 -p "Set Brightness:")
     if [ $? -eq 0 ] && [ $br -gt -1 ] && [ $br -lt 101 ]; then
         set_brightness "$br%"
         notify

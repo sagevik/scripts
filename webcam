@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Webcam with ffplay
 # ffplay -window_title webcam -fast /dev/video0

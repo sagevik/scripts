@@ -1,0 +1,12 @@
+#!/bin/sh
+
+option=$(printf "Integrated\nManual" | rofi -dmenu -i -l 5 -p "Select Display Setup")
+
+case $option in
+    "Integrated")
+        notify-send "Integrated" "Setting integrated display"
+        ;;
+    "Manual")
+        wdisplays
+        ;;
+esac

@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Function to check and create symlink for colorscheme
 ensure_colorscheme_symlink() {

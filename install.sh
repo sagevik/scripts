@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # Symlink or remove symlinks for scripts in /usr/local/bin
 

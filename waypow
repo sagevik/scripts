@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Pass variables to dmenu
+run_dmenu() {
+	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | rofi -dmenu -i -l 5 -p "?"
+}
+
+chosen="$(run_dmenu)"
+case $chosen in
+    "Lock")
+        hyprlock
+        ;;
+    "Suspend")
+        hyprlock &
+        # swaylock &
+	sleep 1
+        systemctl suspend
+        ;;
+    "Logout")
+        pkill -KILL -u $USER
+        ;;
+    "Reboot")
+        systemctl reboot
+        ;;
+    "Shutdown")
+        systemctl poweroff
+        ;;
+    *)
+        # 
+        ;;
+esac
+
