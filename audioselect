@@ -18,7 +18,7 @@ for ((i = 0; i < ${#descriptions_arr[@]}; i++)); do
     sinks["${descriptions_arr[$i]}"]="${names_arr[$i]}"
 done
 
-description=$(echo "$descriptions" | dmenu -i -l 5 -p "Select Default Audio")
+description=$(echo "$descriptions" | rofi -dmenu -i -l "${#descriptions_arr[@]}" -p "Select Default Audio")
 
 if [ -n "${description}" ]; then
     pactl set-default-sink "${sinks[${description}]}" &&
