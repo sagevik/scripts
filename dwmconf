@@ -1,0 +1,18 @@
+#!/bin/sh
+
+nvim ~/dev/suckless/dwm/config.def.h
+
+cd ~/dev/suckless/dwm/ || exit
+
+# Run make clean install only if necessary
+if ! make -q; then
+		echo "Config changed, compiling and installing dwm"
+    sudo make clean install
+    make clean
+    # Restart dwm only if the build was updated
+    killall dwm
+else
+	echo "No changes made, skipping compile and install"
+fi
+
+cd -
