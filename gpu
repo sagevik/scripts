@@ -9,9 +9,8 @@ select_gpu(){
     optimus-manager --switch $1 --no-confirm
     notify-send --urgency=critical "GPU" "You will be logged out to switch to $1 GPU"
     #log out
-    sleep 2
-    user=$(whoami)
-    pkill -KILL -u "$user"
+    sleep 3
+    pkill -KILL -u "$USER"
 }
 
 chosen="$(run_dmenu)"
