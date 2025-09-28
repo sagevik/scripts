@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# URL to open
+URL="https://chatgpt.com"
+
+# Check for Brave
+if command -v brave >/dev/null 2>&1; then
+    brave --app="$URL"
+    exit 0
+else
+    echo "Error: No supported browser (Brave, Chromium, or Chrome) found."
+    exit 1
+fi
