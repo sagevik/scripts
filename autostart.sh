@@ -29,7 +29,7 @@ xmodmap ~/.Xmodmap
 xset r rate 250 30
 
 # Screen resolution
-xrandr --output eDP-1 --primary --mode 1920x1200 --pos 0x0 --rotate normal &
+sh "$HOME/scripts/bin/setup_display.sh" &
 
 # Compositor
 picom --config $HOME/.config/picom/picom.conf &
