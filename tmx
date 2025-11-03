@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+switch_to() {
+    if [[ -z $TMUX ]]; then
+        tmux attach-session -t $1
+    else
+        tmux switch-client -t $1
+    fi
+}
+
+has_session() {
+    tmux list-sessions | grep -q "^$1:"
+}
+
+hydrate() {
+    if [ -f $2/.tmux-sessionizer ]; then
+        tmux send-keys -t $1 "source $2/.tmux-sessionizer" c-M
+    elif [ -f $HOME/.tmux-sessionizer ]; then
+        tmux send-keys -t $1 "source $HOME/.tmux-sessionizer" c-M
+    fi
+}
+
+
+# File containing additional search paths
+SEARCHPATHS_FILE="$HOME/dev/.sessionizerpaths"
+
+# Searchpaths
+declare -a searchpaths=(
+    ~/
+    ~/.config/
+    ~/dev/
+    ~/dev/c/
+    ~/dev/shell/
+    ~/dev/python
+    ~/dev/goprojects/
+    )
+
+# Append paths from SEARCHPATHS_FILE if it exists
+if [[ -f "$SEARCHPATHS_FILE" ]]; then
+    while IFS= read -r line; do
+        # Skip empty lines or lines starting with #
+        [[ -z "$line" || "$line" =~ ^# ]] && continue
+        # Expand tilde (~) to $HOME
+        line="${line/#\~/$HOME}"
+        searchpaths+=("$line")
+    done < "$SEARCHPATHS_FILE"
+fi
+
+# FZF options for centered appearance
+# FZF_OPTS="--tmux center,65,30,border-native --layout=reverse --no-preview"
+FZF_OPTS="--layout=reverse --no-preview"
+
+exit_if_no_selection() {
+    if [[ -z $1 ]]; then
+        exit 0
+    fi
+}
+
+tmux_sessions=($(tmux ls 2>/dev/null | awk -F: '{print $1}'))
+
+# Add a "New Session" option
+session_list=("${tmux_sessions[@]}" "[New Session]")
+
+# Find projects
+projects=$(find "${searchpaths[@]}" -mindepth 1 -maxdepth 1 -type d)
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+    # Use fzf to select a session or create a new one
+    selected=$(printf '%s\n' "${session_list[@]}" "$projects" | fzf $FZF_OPTS --prompt="TMUX: select/create session > " --print-query | tail -n1)
+fi
+
+exit_if_no_selection "$selected"
+
+if [[ "$selected" = "[New Session]" ]]; then
+    selected=$(echo | fzf $FZF_OPTS --prompt="Enter new session name: " --query="$(basename "$PWD")" --print-query --no-select-1 | tail -n1)
+    exit_if_no_selection "$selected"
+fi
+
+# Use current directory if name of new session is "." or if current path ends with directory name
+if [[ "$selected" = "." ]] || [[ "$selected" = $(basename $PWD) ]]; then
+    selected=$PWD
+fi
+
+selected=${selected// /_}
+selected_name=$(basename "$selected" | tr . _)
+tmux_running=$(pgrep tmux)
+
+if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s $selected_name -c $selected
+    hydrate $selected_name $selected
+    exit 0
+fi
+
+if ! tmux has-session -t=$selected_name 2> /dev/null; then
+    tmux new-session -ds $selected_name -c $selected
+    hydrate $selected_name $selected
+fi
+
+switch_to $selected_name
+
