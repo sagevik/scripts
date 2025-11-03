@@ -24,7 +24,7 @@ description=""
 if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
 		description=$(echo "$descriptions" | rofi -dmenu -i -c -l "${#descriptions_arr[@]}" -p "Select Default Audio")
 else
-		description=$(echo "$descriptions" | dmenu -i -c -l "${#descriptions_arr[@]}" -p "Select Default Audio")
+		description=$(echo "$descriptions" | dmenu -fn "Hack:size=14" -i -c -l "${#descriptions_arr[@]}" -p "Select Default Audio")
 fi
 
 if [ -n "${description}" ]; then
