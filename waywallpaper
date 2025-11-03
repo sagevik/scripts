@@ -107,10 +107,10 @@ else
     echo "$newWp" > "$currentFile"
 
     # Desaturate and colorize image
-    desaturate_and_colorize
+    # desaturate_and_colorize
 
 
     set_wallpaper
-    set_login_background
+    # set_login_background
 fi
 
