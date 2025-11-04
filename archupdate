@@ -31,7 +31,11 @@ reset_update_file() {
 }
 
 update_statusbar() {
-  pkill -RTMIN+5 slstatus
+  if [ $XDG_SESSION_TYPE = "wayland" ]; then
+    pkill -RTMIN+8 waybar
+  else
+    pkill -RTMIN+5 slstatus
+  fi
 }
 
 check_for_updates() {
