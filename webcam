@@ -1,7 +1,8 @@
 #!/bin/sh
 
-# Webcam with ffplay
-# ffplay -window_title webcam -fast /dev/video0
+WIDTH="${1:-480}"
+HEIGHT=$(( ($WIDTH * 3 +2) / 4 ))
 
-# Webcam with mpv
-mpv --no-border --geometry=640x480 --osc=no --osd-bar=no --title="webcam" /dev/video0
+# Webcam with ffplay
+ffplay -fflags nobuffer -avioflags direct -x "$WIDTH" -y "$HEIGHT" -i /dev/video0
+
