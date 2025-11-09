@@ -1,12 +1,13 @@
 #!/bin/sh
 
-# if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-
 # Create an associative array
 declare -A sinks
 
 # Get the list of sinks and their descriptions
 sink_info=$(pactl list sinks)
+
+# Get the current default sink
+current_sink=$(pactl info | grep "Default Sink" | cut -d' ' -f3-)
 
 # Retrieve the names and descriptions using sed
 names=$(echo "$sink_info" | sed -n 's/.*Name: \(.*\)/\1/p')
@@ -16,21 +17,39 @@ descriptions=$(echo "$sink_info" | sed -n 's/.*Description: \(.*\)/\1/p')
 IFS=$'\n' read -r -d '' -a names_arr <<<"$names"
 IFS=$'\n' read -r -d '' -a descriptions_arr <<<"$descriptions"
 
+# Count the number of sinks
+num_sinks=${#descriptions_arr[@]}
+
+# Build descriptions string with * in front of current sink
+descriptions_output=""
 for ((i = 0; i < ${#descriptions_arr[@]}; i++)); do
     sinks["${descriptions_arr[$i]}"]="${names_arr[$i]}"
+    if [ "${names_arr[$i]}" = "$current_sink" ]; then
+        descriptions_output="${descriptions_output}* ${descriptions_arr[$i]}\n"
+    else
+        descriptions_output="${descriptions_output}${descriptions_arr[$i]}\n"
+    fi
 done
+descriptions_output="${descriptions_output}Manual"
 
-description=""
-if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-		description=$(echo "$descriptions" | rofi -dmenu -i -c -l "${#descriptions_arr[@]}" -p "Select Default Audio")
+if [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
+    cmd='rofi -dmenu -i -l $((num_sinks + 1)) -p "Select Default Audio"'
 else
-		description=$(echo "$descriptions" | dmenu -fn "Hack:size=14" -i -c -l "${#descriptions_arr[@]}" -p "Select Default Audio")
+    cmd='dmenu -fn "Hack:size=16" -i -c -l $((num_sinks + 1)) -p "Select Default Audio"'
 fi
 
+# Remove leading * and space from selected description
+description=$(echo -e "$descriptions_output" | eval "$cmd" | sed 's/^\* //')
+
 if [ -n "${description}" ]; then
-    pactl set-default-sink "${sinks[${description}]}" &&
-        notify-send --icon=notification-audio-volume-high "Default Audio Card" "${description}" ||
-        notify-send --icon=dialog-error "Couldn't set default audio sink!"
+    if [ "$description" = "Manual" ]; then
+        pavucontrol &
+        notify-send --icon=notification-audio-volume-high "Audio Settings" "Opening pavucontrol"
+    else
+        pactl set-default-sink "${sinks[${description}]}" &&
+            notify-send --icon=notification-audio-volume-high "Default Audio Card" "${description}" ||
+            notify-send --icon=dialog-error "Couldn't set default audio sink!"
+    fi
 else
     echo "No sink selected. Default audio sink unchanged."
 fi
