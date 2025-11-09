@@ -12,7 +12,7 @@ case $chosen in
         ;;
     "Suspend")
         slock &
-	sleep 1
+        sleep 1
         systemctl suspend
         ;;
     "Logout")
