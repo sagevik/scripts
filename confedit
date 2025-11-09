@@ -41,7 +41,8 @@ if [ -t 0 ]; then
     # Running in a terminal, execute directly
     run_menu
 else
-    # Not in a terminal (e.g., launched from dmenu), open a new terminal
-    ghostty -e bash -c "$0"
-    # kitty -- bash -c "$0"
+    # Not in a terminal, just give a warning
+    notify-send -i dialog-warning "Doofus!" "Run configedit from terminal"
+    # notify-send -u critical -i dialog-warning "Doofus!" "Run configedit from terminal"
+    exit 1
 fi
