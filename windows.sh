@@ -38,7 +38,8 @@ choices=$(
 
     # Display format
     display="${title}  (${class_name})"
-    echo "$display ; $win_id ; $wm_class"
+    echo "${display#* } ; $win_id ; $wm_class"
+    # echo "$display ; $win_id ; $wm_class"
   done
 )
 
