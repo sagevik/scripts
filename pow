@@ -2,7 +2,7 @@
 
 # Pass variables to dmenu
 run_dmenu() {
-	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | dmenu -i -p "?"
+	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | dmenu -fn "Hack:size=16" -i -c -l 5 -p "?"
 }
 
 chosen="$(run_dmenu)"
