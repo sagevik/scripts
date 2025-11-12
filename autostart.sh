@@ -26,7 +26,7 @@ setxkbmap no -option
 xmodmap ~/.Xmodmap
 
 # Key repeat
-xset r rate 250 30
+xset r rate 200 35
 
 # Screen resolution
 sh "$HOME/scripts/bin/setup_display.sh" &
