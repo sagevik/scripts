@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+font="Hack:size=16"
+
 notify() {
   notify-send "Power Profile" "Set to $1"
 }
@@ -79,7 +81,7 @@ run_dmenu() {
     if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
         printf "%s\n" "${!profiles[@]}" | sort | rofi -dmenu -i -l "${#profiles[@]}" -p "Profile (current: $current_profile)"
     else
-        build_menu | sort | dmenu -fn "Hack:size=16" -i -c -l "${#profiles[@]}" -p "Profile"
+        build_menu | sort | dmenu -fn "$font" -i -c -l "${#profiles[@]}" -p "Profile"
         # printf "%s\n" "${!profiles[@]}" | sort | dmenu -fn "Hack:size=16" -i -c -l "${#profiles[@]}" -p "Profile (current: $current_profile)"
     fi
 }

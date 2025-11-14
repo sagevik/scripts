@@ -1,5 +1,7 @@
 #!/bin/sh
 
+font="Hack:size=16"
+
 # Map scratchpad prefixes to keybindings
 get_scratchpad_key() {
   case "$1" in
@@ -43,7 +45,7 @@ choices=$(
   done
 )
 
-selection=$(printf "%s\n" "$choices" | cut -d';' -f1 | sed 's/^\(.\{1,50\}\).*/\1/' | dmenu -fn "Hack:size=16" -i -c -l 15 -p "Select window:")
+selection=$(printf "%s\n" "$choices" | cut -d';' -f1 | sed 's/^\(.\{1,50\}\).*/\1/' | dmenu -fn "$font" -i -c -l 15 -p "Select window:")
 # echo "selection: $selection"
 
 if [ -n "$selection" ]; then
