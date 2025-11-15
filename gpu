@@ -1,8 +1,10 @@
 #!/bin/sh
 
+font="Hack:size=16"
+
 # Pass variables to dmenu
 run_dmenu() {
-	printf "status\nintegrated\nnvidia\nhybrid" | dmenu -i -l 4 -p "Select GPU"
+	printf "status\nintegrated\nnvidia\nhybrid" | dmenu -fn "$font" -i -c -l 4 -p "Select GPU"
 }
 
 select_gpu(){
