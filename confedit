@@ -11,6 +11,7 @@ declare -A configs=(
     ["kanata"]="$HOME/.config/kanata/kanata.kbd"
     ["kitty"]="$HOME/.config/kitty/kitty.conf"
     ["niri"]="$HOME/.config/niri/config.kdl"
+    ["mango"]="$HOME/.config/mango/"
     ["mpv"]="$HOME/.config/mpv/mpv.conf"
     ["picom"]="$HOME/.config/picom/picom.conf"
     ["qtile"]="$HOME/.config/qtile/config.py"
