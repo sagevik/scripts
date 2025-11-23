@@ -1,8 +1,14 @@
 #!/bin/sh
 
+font="Hack Bold 16"
+# WMENU_COLORS="-S f3b37c -s 000000 -N 000000 -n b3b3b3 -m 000000 -M f3b37c"
+
 # Pass variables to dmenu
 run_dmenu() {
-	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | rofi -dmenu -i -l 5 -p "?"
+	# printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | rofi -dmenu -i -l 5 -p "?"
+	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | wmenu -f "$font" -i -c -l 5 $WMENU_COLORS -p "?"
+	# printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | wmenu -f "$font" -i -c -l 5 -S f3b37c -s 000000 -N 000000 -n b3b3b3 -m 000000 -M f3b37c -p "?"
+    # cmd='wmenu -f "Hack Bold 16" -c -i -l $((num_sinks + 1)) -S f3b37c -s 000000 -N 000000 -n b3b3b3 -m 000000 -M f3b37c -p "Select Default Audio"'
 }
 
 chosen="$(run_dmenu)"

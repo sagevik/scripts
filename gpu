@@ -2,10 +2,46 @@
 
 font="Hack:size=16"
 
-# Pass variables to dmenu
-run_dmenu() {
-	printf "status\nintegrated\nnvidia\nhybrid" | dmenu -fn "$font" -i -c -l 4 -p "Select GPU"
+current_mode=$(optimus-manager --print-mode | awk '{print $3}')      # e.g. "balanced"
+
+declare -A gpus=(
+    ["integrated"]="integrated"
+    ["nvidia"]="nvidia"
+    # ["hybrid"]="hybrid"
+)
+
+get_current_gpu_key() {
+    local current_value
+    current_value=$(powerprofilesctl get)
+    for key in "${!gpus[@]}"; do
+        if [ "${gpus[$key]}" = "$current_value" ]; then
+            echo "$key"
+            return
+        fi
+    done
+    echo "Unknown"
 }
+
+build_menu() {
+    # local current_mode
+    # current_mode=$(optimus-manager --print-mode | awk '{print $3}')      # e.g. "balanced"
+
+    for key in "${!gpus[@]}"; do
+        if [ "${gpus[$key]}" = "$current_mode" ]; then
+            printf '* %s\n' "$key"
+        else
+            printf '%s\n' "$key"
+        fi
+    done
+}
+
+run_dmenu() {
+	build_menu | sort | dmenu -fn "$font" -i -c -l 3 -p "Select GPU"
+}
+
+# run_dmenu() {
+# 	printf "status\nintegrated\nnvidia\nhybrid" | dmenu -fn "$font" -i -c -l 4 -p "Select GPU"
+# }
 
 select_gpu(){
     optimus-manager --switch $1 --no-confirm
@@ -15,7 +51,14 @@ select_gpu(){
     pkill -KILL -u "$USER"
 }
 
-chosen="$(run_dmenu)"
+chosen_raw="$(run_dmenu)"
+chosen=${chosen_raw#"* "}
+
+if [ "$chosen" = "$current_mode" ]; then
+  notify-send -t 5000 "GPU" "$chosen mode already selected"
+  exit 0
+fi
+
 case $chosen in
     "status")
         notify-send -t 5000 "GPU status" "$(optimus-manager --print-mode)"

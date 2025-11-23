@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 font="Hack:size=16"
+wayfont="Hack Bold 16"
 
 notify() {
   notify-send "Power Profile" "Set to $1"
@@ -79,7 +80,9 @@ run_dmenu() {
     local current_profile
     current_profile=$(get_current_profile_key)
     if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-        printf "%s\n" "${!profiles[@]}" | sort | rofi -dmenu -i -l "${#profiles[@]}" -p "Profile (current: $current_profile)"
+        build_menu | sort | wmenu -f "$wayfont" -c -i -l "${#profiles[@]}" $WMENU_COLORS -p "Profile"
+        # build_menu | sort | rofi -dmenu -i -l "${#profiles[@]}" -p "Profile (current: $current_profile)"
+        # printf "%s\n" "${!profiles[@]}" | sort | rofi -dmenu -i -l "${#profiles[@]}" -p "Profile (current: $current_profile)"
     else
         build_menu | sort | dmenu -fn "$font" -i -c -l "${#profiles[@]}" -p "Profile"
         # printf "%s\n" "${!profiles[@]}" | sort | dmenu -fn "Hack:size=16" -i -c -l "${#profiles[@]}" -p "Profile (current: $current_profile)"
@@ -93,7 +96,7 @@ if [[ -n "${profiles[$chosen]}" ]]; then
     powerprofilesctl set "${profiles[$chosen]}"
     notify "${profiles[$chosen]}"
     if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-        hyprctl reload
+        # hyprctl reload
         pkill -RTMIN+8 waybar
     else
         pkill -RTMIN+5 slstatus

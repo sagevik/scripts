@@ -1,14 +1,18 @@
 #!/bin/sh
 
+# if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+
+
 if ! command -v magick &>/dev/null; then
     notify-send --urgency=critical "Error" "Imagemagick is not installed. Please install it to use this script"
     exit 1
 fi
 
 wallpaperDir="$HOME/pix/wallpapers"
-wp="$HOME/.local/share/background/wp.png"
+wp="$HOME/pix/wallpapers/.current"
+# wp="$HOME/.local/share/background/wp.png"
 loginmanager="/usr/share/sddm/themes/monochrome-rs/backgrounds/wp.png"
-currentFile="$wallpaperDir/.current"
+currentFile="$wallpaperDir/.name_of_current"
 
 desaturate_and_colorize() {
     magick "$wp" -modulate 100,0 "$wp"
@@ -16,7 +20,9 @@ desaturate_and_colorize() {
 }
 
 set_wallpaper() {
-    xwallpaper --zoom "$wp" &
+    # xwallpaper --zoom "$wp" &
+    swaybg -i "$wp" -m fill
+    # hyprctl hyprpaper reload , "$wp"
 }
 
 set_login_background() {
@@ -51,9 +57,16 @@ elif [ "$1" = "--nsxiv" ]; then
     option="nsxiv"
 
 else
+  if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    # List wallpapers excluding .current and current wallpaper
+    wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" -e "^README\.md$")
+    option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | wmenu -f "Hack Bold 16" -c -i -l 15 $WMENU_COLORS -p "Wallpaper")
+    # option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | rofi -dmenu -i -l 15 -p "Wallpaper")
+  else
     # List wallpapers excluding .current and current wallpaper
     wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" -e "^README\.md$")
     option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | dmenu -i -l 15 -p "Wallpaper")
+  fi
 fi
 
 case $option in
@@ -91,9 +104,12 @@ else
 
     if [ "$mimeType" = "image/png" ]; then
         # File is already a PNG; just copy it
+        echo "cp $wallpaperDir/$newWp $wp"
         cp "$wallpaperDir/$newWp" "$wp"
     else
         # Convert to PNG
+        echo "cp $wallpaperDir/$newWp $wp"
+        echo "ffmpeg -loglevel quiet -y -i $wallpaperDir/$newWp $wp"
         ffmpeg -loglevel quiet -y -i "$wallpaperDir/$newWp" "$wp"
     fi
 
@@ -101,10 +117,11 @@ else
     echo "$newWp" > "$currentFile"
 
     # Desaturate and colorize image
-    desaturate_and_colorize
+    # desaturate_and_colorize
 
 
     set_wallpaper
-    set_login_background
+    # set_login_background
 fi
 
+exit 0

@@ -35,7 +35,8 @@ done
 descriptions_output="${descriptions_output}Manual"
 
 if [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
-    cmd='rofi -dmenu -i -l $((num_sinks + 1)) -p "Select Default Audio"'
+    # cmd='rofi -dmenu -i -l $((num_sinks + 1)) -p "Select Default Audio"'
+    cmd='wmenu -f "Hack Bold 16" -c -i -l $((num_sinks + 1)) $WMENU_COLORS -p "Select Default Audio"'
 else
     cmd='dmenu -fn "$font" -i -c -l $((num_sinks + 1)) -p "Select Default Audio"'
 fi
