@@ -1,33 +1,71 @@
 #!/bin/sh
 
+is_wayland=false
 font="Hack:size=16"
+
+if [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
+  is_wayland=true
+  font="Hack Bold 16"
+fi
 
 # Pass variables to dmenu
 run_dmenu() {
-	printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | dmenu -fn "$font" -i -c -l 5 -p "?"
+  if [[ "$XDG_SESSION_TYPE" = "wayland" ]]; then
+    printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | wmenu -f "$font" -i -c -l 5 $WMENU_COLORS -p "?"
+  else
+    printf "Lock\nSuspend\nLogout\nReboot\nShutdown" | sort | dmenu -fn "$font" -i -c -l 5 -p "?"
+  fi
 }
 
 chosen="$(run_dmenu)"
-case $chosen in
-    "Lock")
-        slock
-        ;;
-    "Suspend")
-        slock &
-        sleep 1
-        systemctl suspend
-        ;;
-    "Logout")
-        pkill -KILL -u $USER
-        ;;
-    "Reboot")
-        systemctl reboot
-        ;;
-    "Shutdown")
-        systemctl poweroff
-        ;;
-    *)
-        # 
-        ;;
-esac
-
+if $is_wayland; then
+  case $chosen in
+      "Lock")
+          sleep 1
+          hyprlock
+          ;;
+      "Suspend")
+          hyprlock &
+          sleep 1
+          systemctl suspend
+          ;;
+      "Logout")
+          sleep 1
+          pkill -KILL -u $USER
+          ;;
+      "Reboot")
+          sleep 1
+          systemctl reboot
+          ;;
+      "Shutdown")
+          sleep 1
+          systemctl poweroff
+          ;;
+      *)
+          exit 0
+          ;;
+  esac
+else
+  case $chosen in
+      "Lock")
+          slock
+          ;;
+      "Suspend")
+          slock &
+          sleep 1
+          systemctl suspend
+          ;;
+      "Logout")
+          pkill -KILL -u $USER
+          ;;
+      "Reboot")
+          systemctl reboot
+          ;;
+      "Shutdown")
+          systemctl poweroff
+          ;;
+      *)
+          # 
+          ;;
+  esac
+fi
