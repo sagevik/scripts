@@ -1,6 +1,9 @@
 #!/bin/sh
 
-# if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+is_wayland=false
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+  is_wayland=true
+fi
 
 
 if ! command -v magick &>/dev/null; then
@@ -57,13 +60,11 @@ elif [ "$1" = "--nsxiv" ]; then
     option="nsxiv"
 
 else
-  if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+  if $is_wayland; then
     # List wallpapers excluding .current and current wallpaper
     wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" -e "^README\.md$")
     option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | wmenu -f "Hack Bold 16" -c -i -l 15 $WMENU_COLORS -p "Wallpaper")
-    # option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | rofi -dmenu -i -l 15 -p "Wallpaper")
   else
-    # List wallpapers excluding .current and current wallpaper
     wallpaperList=$(ls "$wallpaperDir" | grep -v -e "^\.current$" -e "^${currentWp}$" -e "^README\.md$")
     option=$(printf "Preview\nRandom\nReload\n${wallpaperList}" | dmenu -i -l 15 -p "Wallpaper")
   fi
