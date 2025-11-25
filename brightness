@@ -8,7 +8,8 @@ get_brightness() {
 }
 
 notify() {
-    notify-send --icon=video-display -h int:value:"$(get_brightness)%" "Brightness" "$(get_brightness)%"
+    notify-send --icon=video-display -h int:value:"$(get_brightness)%" -h string:synchronous:my-progress "Brightness" "$(get_brightness)%"
+    # notify-send --icon=video-display -h int:value:"$(get_brightness)%" "Brightness" "$(get_brightness)%"
 }
 
 set_brightness() {
