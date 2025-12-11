@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 font="Hack:size=16"
-wayfont="Hack Bold 16"
+wayfont="Hack Bold 24"
 
 notify() {
   notify-send "Power Profile" "Set to $1"
@@ -46,9 +46,9 @@ fi
 # )
 
 declare -A profiles=(
-    ["Balanced"]="balanced"
-    ["Performance"]="performance"
-    ["Power saver"]="power-saver"
+    ["⚖️ Balanced"]="balanced"
+    ["⚡ Performance"]="performance"
+    ["♻️ Power saver"]="power-saver"
 )
 
 get_current_profile_key() {
